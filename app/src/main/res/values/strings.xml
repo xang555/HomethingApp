@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">LaoThing</string>
+    <string name="app_name">Home Thing</string>
+    <string name="user_profile">Profile</string>
+    <string name="permission_camera_rationale">Need Camera Promission for continue</string>
+    <string name="button_allow">OK</string>
+    <string name="button_deny">Deny</string>
+    <string name="permission_camera_denied">Don\'t have permission</string>
+    <string name="permission_camera_neverask">You check Never Ask Again</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="center_title">Smart Devices</string>
 </resources>

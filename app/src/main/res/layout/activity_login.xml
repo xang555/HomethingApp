@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_left_padding"
     android:paddingRight="@dimen/activity_right_padding"
     android:background="@color/colorPrimaryDark"
-    tools:context="com.xang.laothing.LoginActivity">
+    tools:context="com.xang.laothing.Activity.LoginActivity">
 
     <ImageView
         android:id="@+id/imageView"

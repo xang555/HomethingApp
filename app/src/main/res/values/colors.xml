@@ -6,5 +6,6 @@
     <color name="colorButtonPress">#1565C0</color>
     <color name="colorButton">#1E88E5</color>
     <color name="colorForgotPassword">#085071</color>
-
+    <color name="buttonnonActive">#CFD8DC</color>
+    <color name="buttonActive">#18FFFF</color>
 </resources>

@@ -3,7 +3,7 @@
     package="com.xang.laothing">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,15 +11,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activity.SmartSwitchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".LoginActivity"></activity>-->
-        <activity android:name=".ScanQrcodeViewer"></activity>
+        <!-- <activity android:name=".LoginActivity"></activity> -->
+        <activity android:name=".Activity.ScanQrcodeViewer" />
+        <!-- <activity android:name=".SmartSwitchActivity"></activity> -->
+        <activity android:name=".Activity.SmartSwitchControllerActivity" />
+        <activity android:name=".Activity.SmartSwitchSchedulerActivity" />
+        <activity android:name=".Activity.ConnectWifiActivity"></activity>
     </application>
 
 </manifest>

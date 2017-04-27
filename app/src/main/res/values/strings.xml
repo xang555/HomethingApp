@@ -10,4 +10,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="center_title">Smart Devices</string>
+    <string name="smartswitchactivity">Smart Switch</string>
+    <string name="smartswitchcontrolleractivity">Controller</string>
+    <string name="scheduler">Scheduler</string>
 </resources>

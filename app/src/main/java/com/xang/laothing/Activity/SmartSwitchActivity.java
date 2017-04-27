@@ -46,4 +46,17 @@ public class SmartSwitchActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
+    @OnClick(R.id.swartswitch_setting)
+    public void onsettingClicked() {
+
+        Intent intent = new Intent(SmartSwitchActivity.this, ConnectWifiActivity.class);
+        startActivity(intent);
+
+
+    }
+
+
+
+
 }

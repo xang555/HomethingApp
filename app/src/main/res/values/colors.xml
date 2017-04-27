@@ -8,4 +8,5 @@
     <color name="colorForgotPassword">#085071</color>
     <color name="buttonnonActive">#CFD8DC</color>
     <color name="buttonActive">#18FFFF</color>
+    <color name="colorOverlay">#78ffffff</color>
 </resources>

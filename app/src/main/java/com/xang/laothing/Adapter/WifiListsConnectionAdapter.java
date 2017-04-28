@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.xang.laothing.Model.WifiScanModel;
 import com.xang.laothing.R;
 
 import java.util.List;
@@ -16,10 +18,10 @@ import java.util.List;
 
 public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsConnectionAdapter.Viewhloder>{
 
-    private List<String> wifiscanresult ;
+    private List<WifiScanModel> wifiscanresult ;
     private Context context;
 
-    public WifiListsConnectionAdapter(Context context, List<String> wifiscanresult){
+    public WifiListsConnectionAdapter(Context context, List<WifiScanModel> wifiscanresult){
         this.wifiscanresult = wifiscanresult;
         this.context = context;
     }
@@ -35,7 +37,7 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
 
     @Override
     public void onBindViewHolder(Viewhloder holder, int position) {
-        holder.ssid.setText(this.wifiscanresult.get(position));
+        holder.ssid.setText(this.wifiscanresult.get(position).getSsid());
     }
 
     @Override
@@ -44,15 +46,16 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
     }
 
 
-
     static class Viewhloder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView ssid ;
+        TextView bssid;
 
         public Viewhloder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             ssid = (TextView)itemView.findViewById(R.id.wifi_ssid);
+            bssid = (TextView)itemView.findViewById(R.id.wifi_status);
         }
 
         @Override

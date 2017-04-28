@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xang.laothing.Adapter.WifiListsConnectionAdapter;
+import com.xang.laothing.Model.WifiScanModel;
 import com.xang.laothing.R;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class ConnectWifiActivity extends AppCompatActivity {
 
     private WifiManager wifiManager;
     private BroadcastReceiver receiver;
-    private List<String> scanwifiResult = new ArrayList<String>();
+    private List<WifiScanModel> scanwifiResult = new ArrayList<>();
     private WifiListsConnectionAdapter connectionListsAdapter;
 
 
@@ -116,7 +117,7 @@ public class ConnectWifiActivity extends AppCompatActivity {
                     scanwifiResult.clear();
 
                     for (ScanResult result : scanResults) {
-                        scanwifiResult.add(result.SSID);
+
                     }
 
                     runOnUiThread(new TimerTask() {

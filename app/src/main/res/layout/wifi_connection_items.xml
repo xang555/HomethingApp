@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView android:layout_height="wrap_content"
+<android.support.v7.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:focusable="true"
@@ -13,35 +14,48 @@
 
         <ImageView
             android:id="@+id/wifi_icon"
-            android:layout_width="41dp"
-            android:layout_height="45dp"
+            android:layout_width="31dp"
+            android:layout_height="30dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:tint="#000"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/wifi" />
+            app:srcCompat="@drawable/wifi"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/wifi_ssid"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintHorizontal_bias="0.971" />
 
         <TextView
             android:id="@+id/wifi_ssid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="323dp"
             android:layout_marginTop="8dp"
             android:text="Docker"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.159"
-            app:layout_constraintLeft_toRightOf="@+id/wifi_icon"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.514" />
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="0.19" />
+
+        <TextView
+            android:id="@+id/wifi_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:text="connecting..."
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wifi_ssid" />
 
     </android.support.constraint.ConstraintLayout>
 

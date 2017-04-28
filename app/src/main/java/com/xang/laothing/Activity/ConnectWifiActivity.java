@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -64,6 +69,12 @@ public class ConnectWifiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connect_wifi);
         ButterKnife.bind(this);
 
+        toolbarAndProgressbarCenterTitle.setText(R.string.connect_smart_device_wifi);
+        mainToolbarAndProgressbar.setTitle("");
+        setSupportActionBar(mainToolbarAndProgressbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
 
     }
@@ -95,6 +106,17 @@ public class ConnectWifiActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -118,6 +140,12 @@ public class ConnectWifiActivity extends AppCompatActivity {
 
                     for (ScanResult result : scanResults) {
 
+                        WifiScanModel scanModel = new WifiScanModel();
+                        scanModel.setBssid(result.BSSID);
+                        scanModel.setSsid(result.SSID);
+                        scanModel.setStatus(getConnectStatus(result.BSSID));
+                        scanwifiResult.add(scanModel);
+
                     }
 
                     runOnUiThread(new TimerTask() {
@@ -133,14 +161,48 @@ public class ConnectWifiActivity extends AppCompatActivity {
         };
 
         registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
+
+        wifiManager.startScan(); // start scan wifi
+        SetupScanLits();  // setup lists for wifi scan
+
+    }
+
+
+    private void SetupScanLits(){
 
         connectionListsAdapter = new WifiListsConnectionAdapter(ConnectWifiActivity.this,scanwifiResult);
         wifiConnectionLists.setLayoutManager(new LinearLayoutManager(ConnectWifiActivity.this));
         wifiConnectionLists.setHasFixedSize(true);
         wifiConnectionLists.setAdapter(connectionListsAdapter);
 
-    }
+    } // set data to recycleview
+
+
+    private boolean getConnectStatus(String bssid){
+
+        ConnectivityManager connManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        if (networkInfo!=null){
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI){
+
+                if (networkInfo.isConnected()){
+
+                     WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                     WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                    if (connectionInfo!=null && connectionInfo.getBSSID().equals(bssid)){
+                        return true;
+                    }
+                }
+
+            }
+
+        }
+
+        return false;
+
+    } // get status connection for bssid
+
+
 
     @OnShowRationale({Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE})
@@ -206,7 +268,7 @@ public class ConnectWifiActivity extends AppCompatActivity {
 
         dialog.show();
 
-    }
+    } // show dialog for enable wifi if not yet
 
 
 }

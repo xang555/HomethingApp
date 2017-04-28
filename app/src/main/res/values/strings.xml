@@ -15,4 +15,5 @@
     <string name="scheduler">Scheduler</string>
     <string name="promission_wifi_denied">You denie application to access Wifi</string>
     <string name="promission_wifi_neverask">you never ask again</string>
+    <string name="connect_smart_device_wifi">Connect SmartDevice Wifi</string>
 </resources>

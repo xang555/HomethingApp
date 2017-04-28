@@ -23,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xang.laothing.Model.WifiScanModel;
 import com.xang.laothing.R;
@@ -38,14 +39,16 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
     private List<WifiScanModel> wifiscanresult;
     private Context context;
     private AlertDialog alertDialog;
-    private BroadcastReceiver broadcastReceiver = new WifiBroadcastReceiver();
+    private BroadcastReceiver broadcastReceiver;
     private String desiredMacAddress = "bssid";
     private ProgressDialog wificonnecting;
+    private int netId = 0;
 
     public WifiListsConnectionAdapter(Context context, List<WifiScanModel> wifiscanresult) {
         this.wifiscanresult = wifiscanresult;
         this.context = context;
 
+        broadcastReceiver = new WifiBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         context.registerReceiver(broadcastReceiver, intentFilter);
@@ -67,6 +70,8 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
         holder.ssid.setText(this.wifiscanresult.get(position).getSsid());
         if (this.wifiscanresult.get(position).getstatus()) {
             holder.ssid.setTextColor(Color.BLUE);
+        }else {
+            holder.ssid.setTextColor(Color.BLACK);
         }
         holder.status.setText(this.wifiscanresult.get(position).getstatus() ? "Connected" : "");
 
@@ -139,7 +144,7 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
 
                         dialog.dismiss();
                         ConnectWifi(ssid,passwordwifi.getText().toString().trim());
-                        showprogrssConnecting();
+                        showprogrssConnecting(ssid);
 
                     }
 
@@ -161,8 +166,10 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for( WifiConfiguration i : list ) {
             if(i.SSID != null && i.SSID.equals("\"" + ssid + "\"")) {
+
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
+                netId = i.networkId;
                 wifiManager.reconnect();
 
                 break;
@@ -175,28 +182,45 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
 
     class WifiBroadcastReceiver extends BroadcastReceiver {
 
+        private  WifiManager wifiManager;
+
+        public WifiBroadcastReceiver(){
+            wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION .equals(action)) {
-                SupplicantState state = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-                if (SupplicantState.isValidState(state)
-                        && state == SupplicantState.COMPLETED) {
 
-                    boolean connected = checkConnectedToDesiredWifi();
-                    if (connected){
-                        wificonnecting.dismiss();
+                SupplicantState state = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+
+                if (SupplicantState.isValidState(state)) {
+
+                    if (state == SupplicantState.COMPLETED){
+                        boolean connected = checkConnectedToDesiredWifi();
+                        if (connected){
+                            wificonnecting.dismiss();
+                        }
                     }
 
                 }
+
+           int stateerror = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR,0);
+
+                if (stateerror == WifiManager.ERROR_AUTHENTICATING){
+                    wifiManager.disableNetwork(netId);
+                    wifiManager.disconnect();
+                    wificonnecting.dismiss();
+                    showWifiAuthErrorDialog();
+                }
+
             }
 
         }
 
         private boolean checkConnectedToDesiredWifi() {
             boolean connected = false;
-
-            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
             WifiInfo wifi = wifiManager.getConnectionInfo();
             if (wifi != null) {
@@ -212,14 +236,30 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
     } //WifiBroadcastReceiver class
 
 
-    private void showprogrssConnecting(){
+    private void showWifiAuthErrorDialog(){
+
+        android.app.AlertDialog alert = new android.app.AlertDialog.Builder(context)
+                .setTitle("Connection Failed")
+                .setMessage(R.string.authentication_wifi_error)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+    } //show auth error
+
+
+    private void showprogrssConnecting(String ssid){
 
         wificonnecting = new ProgressDialog(context);
         wificonnecting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        wificonnecting.setMessage("Connecting...");
+        wificonnecting.setMessage("Connecting to " + ssid);
+        wificonnecting.setCancelable(false);
         wificonnecting.show();
 
-    }
+    } // show progress connecting to specific wifi
 
 
 

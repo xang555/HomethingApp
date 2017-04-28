@@ -16,4 +16,5 @@
     <string name="promission_wifi_denied">You denie application to access Wifi</string>
     <string name="promission_wifi_neverask">you never ask again</string>
     <string name="connect_smart_device_wifi">Connect SmartDevice Wifi</string>
+    <string name="authentication_wifi_error">Authentication Failed</string>
 </resources>

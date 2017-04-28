@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +27,8 @@
         <!-- <activity android:name=".SmartSwitchActivity"></activity> -->
         <activity android:name=".Activity.SmartSwitchControllerActivity" />
         <activity android:name=".Activity.SmartSwitchSchedulerActivity" />
-        <activity android:name=".Activity.ConnectWifiActivity"></activity>
+        <activity android:name=".Activity.ConnectWifiActivity" />
+        <activity android:name=".Activity.SettingConnectWifiToSamrtDeviceActivity"></activity>
     </application>
 
 </manifest>

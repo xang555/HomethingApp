@@ -1,6 +1,7 @@
 package com.xang.laothing.Activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,8 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -21,7 +24,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -60,6 +69,11 @@ public class ConnectWifiActivity extends AppCompatActivity {
     private BroadcastReceiver receiver;
     private List<WifiScanModel> scanwifiResult = new ArrayList<>();
     private WifiListsConnectionAdapter connectionListsAdapter;
+
+    private String desiredMacAddress = "bssid";
+    private ProgressDialog wificonnecting;
+    private AlertDialog alertDialog;
+    private int netId = 0;
 
 
     @Override
@@ -128,40 +142,11 @@ public class ConnectWifiActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE})
     void ScanWifi() {
 
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                if (intent.getAction() == WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) {
-
-                    List<ScanResult> scanResults = wifiManager.getScanResults();
-
-                    scanwifiResult.clear();
-
-                    for (ScanResult result : scanResults) {
-
-                        WifiScanModel scanModel = new WifiScanModel();
-                        scanModel.setBssid(result.BSSID);
-                        scanModel.setSsid(result.SSID);
-                        scanModel.setStatus(getConnectStatus(result.BSSID));
-                        scanwifiResult.add(scanModel);
-
-                    }
-
-                    runOnUiThread(new TimerTask() {
-                        @Override
-                        public void run() {
-                            connectionListsAdapter.notifyDataSetChanged();
-                        }
-                    });
-
-                }
-
-            }
-        };
-
-        registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-
+        receiver = new WifiBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        registerReceiver(receiver, filter ); // register broadcase
         wifiManager.startScan(); // start scan wifi
         SetupScanLits();  // setup lists for wifi scan
 
@@ -171,11 +156,213 @@ public class ConnectWifiActivity extends AppCompatActivity {
     private void SetupScanLits(){
 
         connectionListsAdapter = new WifiListsConnectionAdapter(ConnectWifiActivity.this,scanwifiResult);
+        connectionListsAdapter.setOnItemClickListentner(new WifiListsConnectionAdapter.WifiAdapterListentner() {
+            @Override
+            public void onItemClick(WifiScanModel wifiScanModel, int position) {
+
+               if (!wifiScanModel.getstatus()){
+                desiredMacAddress = wifiScanModel.getBssid();
+                ShowInputDialog(wifiScanModel.getSsid());
+            }
+
+            }
+        });
+
         wifiConnectionLists.setLayoutManager(new LinearLayoutManager(ConnectWifiActivity.this));
         wifiConnectionLists.setHasFixedSize(true);
         wifiConnectionLists.setAdapter(connectionListsAdapter);
 
     } // set data to recycleview
+
+
+    class WifiBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION .equals(action)) {
+                SupplicantState state = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
+                if (SupplicantState.isValidState(state)) {
+
+                    if (state == SupplicantState.COMPLETED){
+                        boolean connected = checkConnectedToDesiredWifi();
+                        if (connected){
+                           runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   wificonnecting.dismiss();
+                               }
+                           });
+                        }
+
+                    }
+
+                }
+
+                int stateerror = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR,0);
+
+                if (stateerror == WifiManager.ERROR_AUTHENTICATING){
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wifiManager.disableNetwork(netId);
+                            wifiManager.disconnect();
+                            wificonnecting.dismiss();
+                            showWifiAuthErrorDialog();
+                        }
+                    });
+
+                }
+
+            }
+
+
+            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+
+                List<ScanResult> scanResults = wifiManager.getScanResults();
+
+                scanwifiResult.clear();
+
+                for (ScanResult result : scanResults) {
+
+                    WifiScanModel scanModel = new WifiScanModel();
+                    scanModel.setBssid(result.BSSID);
+                    scanModel.setSsid(result.SSID);
+                    scanModel.setStatus(getConnectStatus(result.BSSID));
+                    scanwifiResult.add(scanModel);
+
+                }
+
+                runOnUiThread(new TimerTask() {
+                    @Override
+                    public void run() {
+                        connectionListsAdapter.notifyDataSetChanged();
+                    }
+                });
+
+            }
+
+
+
+        }
+
+        private boolean checkConnectedToDesiredWifi() {
+            boolean connected = false;
+
+            WifiInfo wifi = wifiManager.getConnectionInfo();
+            if (wifi != null) {
+                // get current router Mac address
+                String bssid = wifi.getBSSID();
+                connected = desiredMacAddress.equals(bssid);
+            }
+
+            return connected;
+        }
+
+
+    } //WifiBroadcastReceiver class
+
+
+    private void ShowInputDialog(final String ssid) {
+
+        View view = LayoutInflater.from(ConnectWifiActivity.this).inflate(R.layout.enterwifipassworddialog, null, false);
+        final EditText passwordwifi = (EditText)view.findViewById(R.id.wifi_password);
+        CheckBox checkshowpassword= (CheckBox)view.findViewById(R.id.check_show_password);
+
+        checkshowpassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+                    passwordwifi.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }else{
+                    passwordwifi.setInputType(129);
+                }
+
+            }
+        });
+
+
+        alertDialog = new AlertDialog.Builder(ConnectWifiActivity.this)
+                .setTitle(ssid)
+                .setView(view)
+                .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String passwd = passwordwifi.getText().toString().trim();
+                        if (passwd.length() <=0 || passwd.length() < 8 ){
+                        Snackbar.make(scanbWifiContainer,R.string.Correct_password_wifi,Snackbar.LENGTH_LONG).show();
+                         return;
+                        }else {
+                            dialog.dismiss();
+                            ConnectWifi(ssid,passwd);
+                            showprogrssConnecting(ssid);
+                        }
+
+                    }
+
+                }).show();
+
+    } // show dialog input password
+
+
+    private void ConnectWifi(String ssid, String password) {
+
+        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        WifiConfiguration wifiConfiguration = new WifiConfiguration();
+        wifiConfiguration.SSID = "\"" + ssid + "\"";
+        wifiConfiguration.preSharedKey = "\"" + password + "\"";
+
+        wifiManager.addNetwork(wifiConfiguration);
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        for( WifiConfiguration i : list ) {
+            if(i.SSID != null && i.SSID.equals("\"" + ssid + "\"")) {
+
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(i.networkId, true);
+                netId = i.networkId;
+                wifiManager.reconnect();
+
+                break;
+            }
+        }
+
+
+    } // connect to wifi
+
+    private void showWifiAuthErrorDialog(){
+
+        android.app.AlertDialog alert = new android.app.AlertDialog.Builder(ConnectWifiActivity.this)
+                .setTitle("Connection Failed")
+                .setMessage(R.string.authentication_wifi_error)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+    } //show auth error
+
+
+    private void showprogrssConnecting(String ssid){
+
+        wificonnecting = new ProgressDialog(ConnectWifiActivity.this);
+        wificonnecting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        wificonnecting.setMessage("Connecting to " + ssid);
+        wificonnecting.setCancelable(false);
+        wificonnecting.show();
+
+    } // show progress connecting to specific wifi
 
 
     private boolean getConnectStatus(String bssid){
@@ -201,8 +388,6 @@ public class ConnectWifiActivity extends AppCompatActivity {
         return false;
 
     } // get status connection for bssid
-
-
 
     @OnShowRationale({Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE})

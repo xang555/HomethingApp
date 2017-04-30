@@ -38,21 +38,17 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
 
     private List<WifiScanModel> wifiscanresult;
     private Context context;
-    private AlertDialog alertDialog;
-    private BroadcastReceiver broadcastReceiver;
-    private String desiredMacAddress = "bssid";
-    private ProgressDialog wificonnecting;
-    private int netId = 0;
+
+    public interface WifiAdapterListentner {
+        public void onItemClick(WifiScanModel wifiScanModel, int position);
+    }
+
+    private WifiAdapterListentner wifiListentner;
+
 
     public WifiListsConnectionAdapter(Context context, List<WifiScanModel> wifiscanresult) {
         this.wifiscanresult = wifiscanresult;
         this.context = context;
-
-        broadcastReceiver = new WifiBroadcastReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-        context.registerReceiver(broadcastReceiver, intentFilter);
-
     }
 
     @Override
@@ -98,9 +94,8 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
         @Override
         public void onClick(View v) {
 
-            if (!wifiscanresult.get(getAdapterPosition()).getstatus()){
-                desiredMacAddress = wifiscanresult.get(getAdapterPosition()).getBssid();
-                ShowInputDialog(wifiscanresult.get(getAdapterPosition()).getSsid());
+            if (wifiListentner !=null){
+                wifiListentner.onItemClick(wifiscanresult.get(getAdapterPosition()), getAdapterPosition());
             }
 
         }
@@ -109,159 +104,9 @@ public class WifiListsConnectionAdapter extends RecyclerView.Adapter<WifiListsCo
     }
 
 
-    private void ShowInputDialog(final String ssid) {
-
-        View view = LayoutInflater.from(context).inflate(R.layout.enterwifipassworddialog, null, false);
-        final EditText passwordwifi = (EditText)view.findViewById(R.id.wifi_password);
-        CheckBox checkshowpassword= (CheckBox)view.findViewById(R.id.check_show_password);
-
-        checkshowpassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (isChecked){
-                    passwordwifi.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }else{
-                    passwordwifi.setInputType(129);
-                }
-
-            }
-        });
-
-
-        alertDialog = new AlertDialog.Builder(context)
-                .setTitle(ssid)
-                .setView(view)
-                .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        dialog.dismiss();
-                        ConnectWifi(ssid,passwordwifi.getText().toString().trim());
-                        showprogrssConnecting(ssid);
-
-                    }
-
-                }).show();
-
-    } // show dialog input password
-
-
-    private void ConnectWifi(String ssid, String password) {
-
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        WifiConfiguration wifiConfiguration = new WifiConfiguration();
-        wifiConfiguration.SSID = "\"" + ssid + "\"";
-        wifiConfiguration.preSharedKey = "\"" + password + "\"";
-
-        wifiManager.addNetwork(wifiConfiguration);
-
-        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
-        for( WifiConfiguration i : list ) {
-            if(i.SSID != null && i.SSID.equals("\"" + ssid + "\"")) {
-
-                wifiManager.disconnect();
-                wifiManager.enableNetwork(i.networkId, true);
-                netId = i.networkId;
-                wifiManager.reconnect();
-
-                break;
-            }
-        }
-
-
-    } // connect to wifi
-
-
-    class WifiBroadcastReceiver extends BroadcastReceiver {
-
-        private  WifiManager wifiManager;
-
-        public WifiBroadcastReceiver(){
-            wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION .equals(action)) {
-
-                SupplicantState state = intent.getParcelableExtra(WifiManager.EXTRA_NEW_STATE);
-
-                if (SupplicantState.isValidState(state)) {
-
-                    if (state == SupplicantState.COMPLETED){
-                        boolean connected = checkConnectedToDesiredWifi();
-                        if (connected){
-                            wificonnecting.dismiss();
-                        }
-                    }
-
-                }
-
-           int stateerror = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR,0);
-
-                if (stateerror == WifiManager.ERROR_AUTHENTICATING){
-                    wifiManager.disableNetwork(netId);
-                    wifiManager.disconnect();
-                    wificonnecting.dismiss();
-                    showWifiAuthErrorDialog();
-                }
-
-            }
-
-        }
-
-        private boolean checkConnectedToDesiredWifi() {
-            boolean connected = false;
-
-            WifiInfo wifi = wifiManager.getConnectionInfo();
-            if (wifi != null) {
-                // get current router Mac address
-                String bssid = wifi.getBSSID();
-                connected = desiredMacAddress.equals(bssid);
-            }
-
-            return connected;
-        }
-
-
-    } //WifiBroadcastReceiver class
-
-
-    private void showWifiAuthErrorDialog(){
-
-        android.app.AlertDialog alert = new android.app.AlertDialog.Builder(context)
-                .setTitle("Connection Failed")
-                .setMessage(R.string.authentication_wifi_error)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
-
-    } //show auth error
-
-
-    private void showprogrssConnecting(String ssid){
-
-        wificonnecting = new ProgressDialog(context);
-        wificonnecting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        wificonnecting.setMessage("Connecting to " + ssid);
-        wificonnecting.setCancelable(false);
-        wificonnecting.show();
-
-    } // show progress connecting to specific wifi
-
-
+    public void setOnItemClickListentner(WifiAdapterListentner listentner){
+        this.wifiListentner = listentner;
+    }
 
 
 }

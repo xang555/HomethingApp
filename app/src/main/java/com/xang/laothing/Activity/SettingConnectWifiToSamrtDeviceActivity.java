@@ -2,6 +2,7 @@ package com.xang.laothing.Activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -10,11 +11,19 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.xang.laothing.Adapter.WifiListsConnectionAdapter;
@@ -42,7 +51,7 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
     private BroadcastReceiver receiver;
     private List<WifiScanModel> scanwifiResult = new ArrayList<>();
     private WifiListsConnectionAdapter connectionListsAdapter;
-
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +117,9 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
             @Override
             public void onItemClick(WifiScanModel wifiScanModel, int position) {
 
+                if (!wifiScanModel.getstatus()){
+                    ShowInputDialog(wifiScanModel.getSsid());
+                }
 
             }
         });
@@ -118,6 +130,77 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
 
     } // set data to recycleview
 
+
+    private void ShowInputDialog(final String ssid) {
+
+        View view = LayoutInflater.from(SettingConnectWifiToSamrtDeviceActivity.this).inflate(R.layout.enterwifipassworddialog, null, false);
+        final EditText passwordwifi = (EditText)view.findViewById(R.id.wifi_password);
+        CheckBox checkshowpassword= (CheckBox)view.findViewById(R.id.check_show_password);
+
+        checkshowpassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+                    passwordwifi.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }else{
+                    passwordwifi.setInputType(129);
+                }
+
+            }
+        });
+
+
+        alertDialog = new AlertDialog.Builder(SettingConnectWifiToSamrtDeviceActivity.this)
+                .setTitle("Set " + ssid + " to Smart device")
+                .setView(view)
+                .setCancelable(false)
+                .setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String passwd = passwordwifi.getText().toString().trim();
+                        if (passwd.length() <=0 || passwd.length() < 8 ){
+                            showAlert("Your Password invalid");
+                        }else {
+                            dialog.dismiss();
+
+                            handleSettingSmartDevice(passwd);
+
+                        }
+
+                    }
+
+                }).show();
+
+    } // show dialog input password
+
+    private void handleSettingSmartDevice(String passwd) {
+
+        // http require here
+
+
+    } // handel setting password wifi to smart device
+
+
+    private void showAlert(String msg){
+
+        new AlertDialog.Builder(SettingConnectWifiToSamrtDeviceActivity.this)
+                .setTitle("Password Invalid")
+                .setMessage(msg)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+    }
 
 
     class WifiBroadcastReceiver extends BroadcastReceiver {

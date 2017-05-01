@@ -55,8 +55,6 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class ConnectWifiActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar_and_progressbar_center_title)
-    TextView toolbarAndProgressbarCenterTitle;
     @BindView(R.id.progressBar2)
     ProgressBar progressBar2;
     @BindView(R.id.main_toolbar_and_progressbar)
@@ -84,7 +82,6 @@ public class ConnectWifiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connect_wifi);
         ButterKnife.bind(this);
 
-        toolbarAndProgressbarCenterTitle.setText(R.string.connect_smart_device_wifi);
         mainToolbarAndProgressbar.setTitle("");
         setSupportActionBar(mainToolbarAndProgressbar);
 
@@ -139,7 +136,6 @@ public class ConnectWifiActivity extends AppCompatActivity {
         }else if (id == R.id.next_setting){
             Intent intent = new Intent(ConnectWifiActivity.this,SettingConnectWifiToSamrtDeviceActivity.class);
             startActivity(intent);
-            finish();
         }
 
         return super.onOptionsItemSelected(item);

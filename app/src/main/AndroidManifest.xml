@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.SmartSwitchActivity">
+        <activity android:name=".Activity.GassSensorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +28,9 @@
         <activity android:name=".Activity.SmartSwitchControllerActivity" />
         <activity android:name=".Activity.SmartSwitchSchedulerActivity" />
         <activity android:name=".Activity.ConnectWifiActivity" />
-        <activity android:name=".Activity.SettingConnectWifiToSamrtDeviceActivity"></activity>
+        <activity android:name=".Activity.SettingConnectWifiToSamrtDeviceActivity" />
+        <!-- <activity android:name=".Activity.TempActivity"></activity> -->
+        <!--<activity android:name=".Activity.GassSensorActivity"></activity>-->
     </application>
 
 </manifest>

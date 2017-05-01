@@ -20,4 +20,9 @@
     <string name="Correct_password_wifi">Please correct password</string>
     <string name="setconnection_wifi_to_smartdevice">SmartDevice Wifi</string>
     <string name="next_setting">Next</string>
+    <string name="setting_mod">Switch Control Mode</string>
+    <string name="temp_monitor_title">Temperature</string>
+    <string name="humi_monitor_title">Humidity</string>
+    <string name="temp_and_humi_toolbar_title">Temp and Humi</string>
+    <string name="gass_sensor_title">Gass Sensor</string>
 </resources>

@@ -3,6 +3,7 @@ package com.xang.laothing.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -11,7 +12,7 @@ import com.xang.laothing.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SmartSwitchSchedulerActivity extends AppCompatActivity {
+public class GassSensorActivity extends AppCompatActivity {
 
     @BindView(R.id.center_title)
     TextView centerTitle;
@@ -21,11 +22,12 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_smart_switch_scheduler);
+        setContentView(R.layout.activity_gass_sensor);
         ButterKnife.bind(this);
 
-        centerTitle.setText(R.string.scheduler);
+        centerTitle.setText(R.string.gass_sensor_title);
         maintoolbar.setTitle("");
+        maintoolbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(maintoolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -34,21 +36,14 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        int id = item.getItemId();
-
-        switch (id){
-            case android.R.id.home :
-                finish();
-                break;
-
-        }
-
-        return super.onOptionsItemSelected(item);
+        getMenuInflater().inflate(R.menu.menu_for_gass_smartalarm,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 }
-

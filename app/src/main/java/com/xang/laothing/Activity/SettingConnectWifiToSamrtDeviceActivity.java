@@ -3,6 +3,7 @@ package com.xang.laothing.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
@@ -10,8 +11,10 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.xang.laothing.Adapter.WifiListsConnectionAdapter;
@@ -34,6 +37,7 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
     Toolbar mainToolbarAndProgressbar;
     @BindView(R.id.list_wifi_scan)
     RecyclerView listWifiScan;
+
     private WifiManager wifiManager;
     private BroadcastReceiver receiver;
     private List<WifiScanModel> scanwifiResult = new ArrayList<>();
@@ -46,16 +50,80 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting_connect_wifi_to_samrt_device);
         ButterKnife.bind(this);
 
+        toolbarAndProgressbarCenterTitle.setText(R.string.setconnection_wifi_to_smartdevice);
+        mainToolbarAndProgressbar.setTitle("");
+        setSupportActionBar(mainToolbarAndProgressbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
 
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        ScanWifi(); //scan wifi
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (receiver!=null){
+            unregisterReceiver(receiver);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    void ScanWifi() {
+
+        receiver = new WifiBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        registerReceiver(receiver, filter ); // register broadcase
+        wifiManager.startScan(); // start scan wifi
+        SetupScanLits();  // setup lists for wifi scan
+
+    }
+
+
+    private void SetupScanLits(){
+
+        connectionListsAdapter = new WifiListsConnectionAdapter(SettingConnectWifiToSamrtDeviceActivity.this,scanwifiResult);
+        connectionListsAdapter.setOnItemClickListentner(new WifiListsConnectionAdapter.WifiAdapterListentner() {
+            @Override
+            public void onItemClick(WifiScanModel wifiScanModel, int position) {
+
+
+            }
+        });
+
+        listWifiScan.setLayoutManager(new LinearLayoutManager(SettingConnectWifiToSamrtDeviceActivity.this));
+        listWifiScan.setHasFixedSize(true);
+        listWifiScan.setAdapter(connectionListsAdapter);
+
+    } // set data to recycleview
+
 
 
     class WifiBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
 
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
 
@@ -81,7 +149,6 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
                 });
 
             }
-
 
         }
 

@@ -7,7 +7,7 @@
     android:id="@+id/scanb_wifi_container"
     tools:context="com.xang.laothing.Activity.ConnectWifiActivity">
 
-    <include layout="@layout/toolbar_and_progressbar"
+    <include layout="@layout/toolbar_for_connectivity"
         android:id="@+id/include4" />
 
     <android.support.v7.widget.RecyclerView

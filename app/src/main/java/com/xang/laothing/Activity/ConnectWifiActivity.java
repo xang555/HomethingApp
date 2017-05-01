@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -122,9 +123,22 @@ public class ConnectWifiActivity extends AppCompatActivity {
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+       getMenuInflater().inflate(R.menu.menu_for_connect_activity,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home){
+        int id = item.getItemId();
+
+        if ( id == android.R.id.home){
+            finish();
+        }else if (id == R.id.next_setting){
+            Intent intent = new Intent(ConnectWifiActivity.this,SettingConnectWifiToSamrtDeviceActivity.class);
+            startActivity(intent);
             finish();
         }
 

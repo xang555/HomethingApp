@@ -18,4 +18,6 @@
     <string name="connect_smart_device_wifi">SmartDevice Wifi</string>
     <string name="authentication_wifi_error">Authentication Failed</string>
     <string name="Correct_password_wifi">Please correct password</string>
+    <string name="setconnection_wifi_to_smartdevice">SmartDevice Wifi</string>
+    <string name="next_setting">Next</string>
 </resources>

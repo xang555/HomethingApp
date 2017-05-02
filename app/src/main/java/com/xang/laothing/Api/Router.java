@@ -1,6 +1,7 @@
 package com.xang.laothing.Api;
 
-import com.xang.laothing.Api.reponse.SignUpResponse;
+import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
+import com.xang.laothing.Api.request.LoginRequest;
 import com.xang.laothing.Api.request.RequestSignup;
 
 import retrofit2.Call;
@@ -14,6 +15,10 @@ import retrofit2.http.POST;
 public interface Router {
 
     @POST("user/singup")
-    Call<SignUpResponse> Sigup(@Body RequestSignup requestSignup);
+    Call<SignUpAndLoginResponse> Sigup(@Body RequestSignup requestSignup);
+
+    @POST("user/login")
+    Call<SignUpAndLoginResponse> Login(@Body LoginRequest loginRequest);
+
 
 }

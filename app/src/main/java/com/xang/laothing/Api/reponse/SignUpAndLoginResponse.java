@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by xang on 02/05/2017.
  */
 
-public class SignUpResponse {
+public class SignUpAndLoginResponse {
 
     @SerializedName("err")
     public int err;

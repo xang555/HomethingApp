@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 
@@ -14,7 +13,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.xang.laothing.Api.ApiService;
-import com.xang.laothing.Api.reponse.SignUpResponse;
+import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
 import com.xang.laothing.Api.request.RequestSignup;
 import com.xang.laothing.FactorySnipView.AlertDialogService;
 import com.xang.laothing.FactorySnipView.Depending;
@@ -44,7 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
     EditText emailinputbox;
 
     private FirebaseAuth auth;
-    private Call<SignUpResponse> call;
+    private Call<SignUpAndLoginResponse> call;
     private ProgressDialog progressDialog;
 
 
@@ -141,15 +140,15 @@ public class SignUpActivity extends AppCompatActivity {
         RequestSignup requestSignup = new RequestSignup(uname,lname,fname,email,uid);
 
         call =  ApiService.getRouterServiceApi().Sigup(requestSignup);
-        call.enqueue(new Callback<SignUpResponse>() {
+        call.enqueue(new Callback<SignUpAndLoginResponse>() {
             @Override
-            public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+            public void onResponse(Call<SignUpAndLoginResponse> call, Response<SignUpAndLoginResponse> response) {
 
                 progressDialog.dismiss(); //dismiss progress dialog
 
                 if (response!=null && response.isSuccessful()){
 
-                    SignUpResponse signUp = response.body();
+                    SignUpAndLoginResponse signUp = response.body();
                     if (signUp.err != 1){
 
                         handleSignUpSuccessFully(signUp);
@@ -166,16 +165,16 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SignUpResponse> call, Throwable t) {
+            public void onFailure(Call<SignUpAndLoginResponse> call, Throwable t) {
                 progressDialog.dismiss();
-                handleSignUpFailure("Sign Up Failure. Please Try again");
+                handleSignUpFailure(t.getMessage());
             }
         });
 
 
     } // sign up with api
 
-    private void handleSignUpSuccessFully(SignUpResponse signUp) {
+    private void handleSignUpSuccessFully(SignUpAndLoginResponse signUp) {
 
         SharePreferentService.SaveToken(SignUpActivity.this,signUp.token);
         goToMainActivity();

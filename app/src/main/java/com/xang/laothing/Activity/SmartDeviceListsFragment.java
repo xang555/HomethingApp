@@ -18,11 +18,7 @@ public class SmartDeviceListsFragment extends Fragment {
     }
 
      public static SmartDeviceListsFragment newInstance() {
-
-        Bundle args = new Bundle();
-
         SmartDeviceListsFragment fragment = new SmartDeviceListsFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 

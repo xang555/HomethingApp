@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     private void HandelScanQrcodeComplete(Intent data) {
 
         String qrcodeValue = data.getStringExtra(ScanQrcodeViewer.QR_CODE_VALUE);
-
         Toast.makeText(getApplicationContext(), qrcodeValue, Toast.LENGTH_LONG).show();
 
     } // handle scan QR code complete

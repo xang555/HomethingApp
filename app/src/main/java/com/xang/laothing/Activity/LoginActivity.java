@@ -87,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.login_button:
+                handleUserLogin();
                 break;
             case R.id.signup:
                 goToSignUpActivity(); // let go to sign up
@@ -96,21 +97,53 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void handleUserLogin() {
+
+        String email = emailinputbox.getText().toString();
+        String passwd = passwdinputbox.getText().toString();
+
+        if (!checkInputValidation(email,passwd)){
+            return;
+        }
+
+        Login(email,passwd); //login
+
+    }
 
 
+    private boolean checkInputValidation(String email, String passwd){
 
-    private void Login(String email , String passwd){
+        boolean isvalid = true;
+        String msgerror= "Can't not empty";
+
+        if (email.trim().length() <=0 ){
+            emailinputbox.setError(msgerror);
+            isvalid = false;
+        }else if (passwd.trim().length() <=0 ){
+            passwdinputbox.setError(msgerror);
+            isvalid = false;
+        }else if (passwd.trim().length() < 8 ){
+            passwdinputbox.setError("Password must have 8 character");
+            isvalid = false;
+        }
+
+        return isvalid;
+
+    }
+
+    private void Login(String email, String passwd){
 
         auth.signInWithEmailAndPassword(email,passwd)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-
+                    LoginWitthApi(authResult.getUser().getUid());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
                         handleLoginFailuer(e.getMessage());
                     }
                 });

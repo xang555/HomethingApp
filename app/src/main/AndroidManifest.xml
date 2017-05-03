@@ -11,17 +11,26 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/lamp"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name="com.orm.SugarApp"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.LoginActivity">
+
+        <meta-data android:name="DATABASE" android:value="homething.db" />
+        <meta-data android:name="VERSION" android:value="1" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.xang.laothing.Database" />
+
+
+        <activity android:name=".Activity.LoginActivity" android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
          <activity android:name=".Activity.MainActivity"></activity>
         <!-- <activity android:name=".LoginActivity"></activity> -->
         <activity android:name=".Activity.ScanQrcodeViewer" />
@@ -33,7 +42,7 @@
         <!-- <activity android:name=".Activity.TempActivity"></activity> -->
         <!-- <activity android:name=".Activity.GassSensorActivity"></activity> -->
         <!-- <activity android:name=".Activity.SmartAlarmActivity"></activity> -->
-        <activity android:name=".Activity.SignUpActivity"></activity>
+        <activity android:name=".Activity.SignUpActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
     </application>
 
 </manifest>

@@ -14,11 +14,12 @@ import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xang.laothing.*;
+import com.xang.laothing.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout container;
     @BindView(R.id.center_title)
     TextView centerTitle;
+    @BindView(R.id.smoothprogressBar)
+    SmoothProgressBar smoothprogressBar;
 
 
     @Override
@@ -54,8 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     @Override

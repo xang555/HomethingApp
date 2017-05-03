@@ -8,6 +8,14 @@
 
     <include layout="@layout/toolbar"/>
 
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        style="@style/GPlusProgressBar"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:id="@+id/smoothprogressBar"
+        />
 
   <FrameLayout
       android:id="@+id/container_frame"

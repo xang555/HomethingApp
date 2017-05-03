@@ -15,9 +15,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.xang.laothing.Api.ApiService;
 import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
 import com.xang.laothing.Api.request.RequestSignup;
-import com.xang.laothing.FactorySnipView.AlertDialogService;
-import com.xang.laothing.FactorySnipView.Depending;
-import com.xang.laothing.FunctionService.SharePreferentService;
+import com.xang.laothing.Service.AlertDialogService;
+import com.xang.laothing.Service.Depending;
+import com.xang.laothing.Service.SharePreferentService;
 import com.xang.laothing.R;
 
 import butterknife.BindView;

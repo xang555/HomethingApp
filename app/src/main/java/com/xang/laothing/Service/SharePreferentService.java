@@ -1,4 +1,4 @@
-package com.xang.laothing.FunctionService;
+package com.xang.laothing.Service;
 
 import android.content.Context;
 import android.content.SharedPreferences;

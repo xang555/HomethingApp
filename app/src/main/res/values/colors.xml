@@ -9,4 +9,18 @@
     <color name="buttonnonActive">#CFD8DC</color>
     <color name="buttonActive">#18FFFF</color>
     <color name="colorOverlay">#78ffffff</color>
+
+    <color name="sg_red">#FF0000</color>
+    <color name="sg_yellow">#ecf279</color>
+    <color name="sg_green">#0b6119</color>
+    <color name="sg_blue">#00c4ff</color>
+
+    <integer-array name="progress_color">
+        <item>@color/sg_red</item>
+        <item>@color/sg_yellow</item>
+        <item>@color/sg_green</item>
+        <item>@color/sg_blue</item>
+    </integer-array>
+
+
 </resources>

@@ -40,6 +40,8 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.github.markushi:circlebutton:1.1'
     compile 'com.kyleduo.switchbutton:library:1.4.5'
+    compile 'com.github.satyan:sugar:1.5'
+    compile 'com.github.castorflex.smoothprogressbar:library:1.1.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.3.2'

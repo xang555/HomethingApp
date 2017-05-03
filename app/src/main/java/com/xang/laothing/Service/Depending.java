@@ -1,4 +1,4 @@
-package com.xang.laothing.FactorySnipView;
+package com.xang.laothing.Service;
 
 import android.app.ProgressDialog;
 import android.content.Context;

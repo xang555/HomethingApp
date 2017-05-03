@@ -106,9 +106,6 @@ public class SmartDeviceAdapter extends RecyclerView.Adapter<SmartDeviceAdapter.
     }
 
 
-
-
-
     public void setItemClickListener(onItemClickListener listener){
         this.itemClickListener= listener;
     }

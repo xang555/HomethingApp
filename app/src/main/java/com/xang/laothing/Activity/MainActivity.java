@@ -197,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleLoadSmartDevicesuccess(DevicesResponse devices) {
 
         List<DevicesResponse.deviceLists> devicelistes = devices.devices;
+        Iterator<SmartDeviceTable> list = SmartDeviceTable.findAll(SmartDeviceTable.class);
 
         for (int i = 0; i < devicelistes.size(); i++) {
 
@@ -218,8 +219,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.regis, device.type, name);
-            deviceTable.save();
+            boolean ishave = false;
+
+            while (list.hasNext()){
+
+                SmartDeviceTable deviceTable = list.next();
+                if (deviceTable.sdid.equals(device.sdid)){
+                    list.remove();
+                    ishave = true;
+                    break;
+                }
+
+            }
+
+            if (!ishave){
+                SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.regis, device.type, name);
+                deviceTable.save();
+            }
 
         }
 

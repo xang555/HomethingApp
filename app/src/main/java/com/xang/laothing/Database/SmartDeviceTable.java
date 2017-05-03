@@ -11,15 +11,15 @@ import com.orm.dsl.Unique;
 public class SmartDeviceTable extends SugarRecord{
 
     @Unique
-    String ssid;
-    String regis;
-    String type;
-    String name;
+    public String sdid;
+    public boolean regis;
+    public int type;
+    public String name;
 
     public SmartDeviceTable(){}
 
-    public SmartDeviceTable(String ssid, String regis , String type, String name){
-        this.ssid = ssid;
+    public SmartDeviceTable(String sdid, boolean regis , int type, String name){
+        this.sdid = sdid;
         this.regis = regis;
         this.type = type;
         this.name = name;

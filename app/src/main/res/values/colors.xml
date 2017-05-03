@@ -22,5 +22,7 @@
         <item>@color/sg_blue</item>
     </integer-array>
 
+    <color name="status_online">#1E88E5</color>
+    <color name="status_offline">#FF0000</color>
 
 </resources>

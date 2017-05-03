@@ -11,18 +11,18 @@ import com.orm.dsl.Unique;
 public class SmartSwitchTable extends SugarRecord {
 
     @Unique
-    String ssid;
-    String btnOneName;
-    String btnTwoName;
-    String btnThreeName;
-    String btnFourName;
+    public String sdid;
+    public String btnOneName;
+    public String btnTwoName;
+    public String btnThreeName;
+    public String btnFourName;
 
     SmartDeviceTable smartDevice;
 
     public SmartSwitchTable(){}
 
-    public SmartSwitchTable(String ssid, String btnOneName, String btnTwoNamem, String btnThreeName, String btnFourName){
-        this.ssid = ssid;
+    public SmartSwitchTable(String sdid, String btnOneName, String btnTwoNamem, String btnThreeName, String btnFourName){
+        this.sdid = sdid;
         this.btnOneName = btnOneName;
         this.btnTwoName = btnTwoNamem;
         this.btnThreeName = btnThreeName;

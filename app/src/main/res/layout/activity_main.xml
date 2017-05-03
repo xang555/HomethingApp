@@ -14,14 +14,26 @@
         android:indeterminate="true"
         style="@style/GPlusProgressBar"
         android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone"
         android:id="@+id/smoothprogressBar"
         />
 
-  <FrameLayout
-      android:id="@+id/container_frame"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"></FrameLayout>
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/smartdevice_refresh_container"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.xang.laothing.Activity.SmartDeviceListsFragment">
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/smartdevice_lists"
+            android:layout_width="match_parent"
+            android:paddingRight="16dp"
+            android:layout_height="match_parent"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <android.support.design.widget.FloatingActionButton

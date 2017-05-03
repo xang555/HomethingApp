@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginLeft="5dp"
-    android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="170dp"
-        app:cardElevation="5dp"
-        android:layout_height="170dp">
+<android.support.v7.widget.CardView android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="5dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -19,42 +18,43 @@
 
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/item_setting"
                 android:layout_width="29dp"
                 android:layout_height="23dp"
-                app:srcCompat="@drawable/more"
                 android:layout_marginLeft="3dp"
+                android:layout_marginTop="5dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="5dp" />
+                app:srcCompat="@drawable/more" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/state_device_active"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintHorizontal_bias="0.913"
-                app:layout_constraintLeft_toRightOf="@+id/imageView2"
+                app:layout_constraintLeft_toRightOf="@+id/item_setting"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/status" />
 
             <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="93dp"
-                android:layout_height="99dp"
-                app:srcCompat="@mipmap/ic_launcher"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="35dp"
+                android:id="@+id/img_device_cover"
+                android:layout_width="114dp"
+                android:layout_height="109dp"
                 android:layout_marginLeft="8dp"
-                app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_marginRight="8dp"
-                app:layout_constraintRight_toRightOf="parent" />
+                android:layout_marginTop="35dp"
+                app:layout_constraintHorizontal_bias="0.508"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_launcher" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/item_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -63,14 +63,12 @@
                 android:layout_marginTop="8dp"
                 android:text="Smart Device"
                 android:textStyle="bold"
+                android:maxLength="15"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+                app:layout_constraintTop_toBottomOf="@+id/img_device_cover" />
         </android.support.constraint.ConstraintLayout>
 
 
     </android.support.v7.widget.CardView>
-
-
-</LinearLayout>

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -17,13 +16,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +32,7 @@ import com.xang.laothing.Adapter.SmartDeviceAdapter;
 import com.xang.laothing.Api.ApiService;
 import com.xang.laothing.Api.reponse.DevicesResponse;
 import com.xang.laothing.Database.SmartDeviceTable;
+import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.Model.SmartDeviceModel;
 import com.xang.laothing.R;
 import com.xang.laothing.Service.AlertDialogService;
@@ -58,7 +58,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @RuntimePermissions
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener{
 
 
     private static final int REQURE_SCAN_QRCODE = 500;
@@ -74,9 +74,12 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView smartdeviceLists;
     @BindView(R.id.smartdevice_refresh_container)
     SwipeRefreshLayout smartdeviceRefreshContainer;
+    @BindView(R.id.no_device_container)
+    FrameLayout noDeviceContainer;
 
     private FirebaseDatabase database;
-    private List<SmartDeviceModel> deviceModels =new ArrayList<SmartDeviceModel>();
+    private List<SmartDeviceModel> deviceModels = new ArrayList<SmartDeviceModel>();
+    SmartDeviceAdapter deviceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,13 +93,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(maintoolbar);
 
         database = FirebaseDatabase.getInstance();
+        smartdeviceRefreshContainer.setOnRefreshListener(this);
+        smartdeviceRefreshContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        setupSmartDeviceLists(); //set up lists
 
         if (SharePreferentService.isFirstLoad(MainActivity.this)) {
             LoadSmartDevices();
         } else {
             FillSmartdeviceToLists();
         }
-
 
     }
 
@@ -130,6 +139,44 @@ public class MainActivity extends AppCompatActivity {
     } //scan qr coe
 
 
+
+    @Override
+    public void onRefresh() {
+
+    LoadSmartDevices(); // load smart device again
+
+    } // on refresh
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id){
+            case android.R.id.home :
+
+                break;
+            case R.id.logout:
+                handleLogout(); //logout fromm app
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void handleLogout() {
+
+        SmartDeviceTable.deleteAll(SmartDeviceTable.class); //delete data smart device
+        SmartSwitchTable.deleteAll(SmartSwitchTable.class); // delete data smart switch
+        SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
+        SharePreferentService.SaveToken(MainActivity.this,""); // delete token
+
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        startActivity(intent);
+        finish();
+
+    } // when logout
+
     private void HandelScanQrcodeComplete(Intent data) {
 
         String qrcodeValue = data.getStringExtra(ScanQrcodeViewer.QR_CODE_VALUE);
@@ -139,20 +186,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void LoadSmartDevices() {
 
-        smoothprogressBar.setVisibility(View.VISIBLE);
 
         ApiService.getRouterServiceApi().getDeviceByUser(SharePreferentService.getToken(MainActivity.this))
                 .enqueue(new Callback<DevicesResponse>() {
                     @Override
                     public void onResponse(Call<DevicesResponse> call, Response<DevicesResponse> response) {
 
-                        if (response != null && response.isSuccessful()) {
+                        if (smartdeviceRefreshContainer.isRefreshing()){
+                            smartdeviceRefreshContainer.setRefreshing(false);
+                        }else{
                             smoothprogressBar.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (response != null && response.isSuccessful()) {
+
                             DevicesResponse devices = response.body();
-                            if (devices.err != 1) {
+                            if (devices.err != 404) {
                                 handleLoadSmartDevicesuccess(devices);
                             } else {
-                                AlertDialogService.ShowAlertDialog(MainActivity.this, "Load Smart Device", "your don't have Smart device, Please Add Your Smart Device");
+                                smartdeviceLists.setVisibility(View.INVISIBLE);
+                                noDeviceContainer.setVisibility(View.VISIBLE);
                             }
 
                         } else {
@@ -172,24 +225,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleLoadSmartDeviceFailure(String message) {
 
-        smoothprogressBar.setVisibility(View.INVISIBLE);
 
-        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Load devices Failure")
-                .setMessage(message + " , do you want try again ?")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        smoothprogressBar.setVisibility(View.VISIBLE);
-                        LoadSmartDevices();
-                    }
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+        if (smartdeviceRefreshContainer.isRefreshing()){
+            smartdeviceRefreshContainer.setRefreshing(false);
+            Snackbar.make(container,message,Snackbar.LENGTH_LONG).show();
+        }else {
+
+            smoothprogressBar.setVisibility(View.INVISIBLE);
+
+            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Load devices Failure")
+                    .setMessage(message + " , do you want try again ?")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            smoothprogressBar.setVisibility(View.VISIBLE);
+                            LoadSmartDevices();
+                        }
+                    })
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+
+        }
 
 
     } //load smart device failure
@@ -197,57 +258,69 @@ public class MainActivity extends AppCompatActivity {
     private void handleLoadSmartDevicesuccess(DevicesResponse devices) {
 
         List<DevicesResponse.deviceLists> devicelistes = devices.devices;
+        if ( devicelistes ==null || devicelistes.size() <=0 ){
+            smartdeviceLists.setVisibility(View.INVISIBLE);
+            noDeviceContainer.setVisibility(View.VISIBLE);
+            return;
+        }
+
         Iterator<SmartDeviceTable> list = SmartDeviceTable.findAll(SmartDeviceTable.class);
+
+        ArrayList<SmartDeviceTable> smartDeviceTableArrayList = new ArrayList<>();
+        while (list.hasNext()){
+            smartDeviceTableArrayList.add(list.next());
+        }
 
         for (int i = 0; i < devicelistes.size(); i++) {
 
             DevicesResponse.deviceLists device = devicelistes.get(i);
             String name = "";
-            switch (device.type){
+            switch (device.type) {
 
-                case 0 :
-                    name = "Smart device "+device.sdid;
+                case 0:
+                    name = "Smart device " + device.sdid;
                     break;
                 case 1:
-                    name = "Temp and Humi "+device.sdid;
+                    name = "Temp and Humi " + device.sdid;
                     break;
                 case 2:
-                    name = "Gas Sensor "+device.sdid;
+                    name = "Gas Sensor " + device.sdid;
                     break;
                 case 3:
-                    name = "Smart Alarm "+device.sdid;
+                    name = "Smart Alarm " + device.sdid;
 
             }
 
             boolean ishave = false;
 
-            while (list.hasNext()){
-
-                SmartDeviceTable deviceTable = list.next();
-                if (deviceTable.sdid.equals(device.sdid)){
-                    list.remove();
+            for (int j =0 ; j < smartDeviceTableArrayList.size() ; j++){
+                SmartDeviceTable deviceTable = smartDeviceTableArrayList.get(j);
+                if (deviceTable.sdid.equals(device.sdid)) {
+                    smartDeviceTableArrayList.remove(j);
                     ishave = true;
                     break;
                 }
-
             }
 
-            if (!ishave){
+            if (!ishave) {
                 SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.regis, device.type, name);
                 deviceTable.save();
             }
 
         }
 
-        SharePreferentService.setFirstLoad(MainActivity.this, false);
-        FillSmartdeviceToLists();
+        SharePreferentService.setFirstLoad(MainActivity.this, false); // set first load data to false
+
+        FillSmartdeviceToLists(); //fill data that load to lists
 
     }// load smart devices successfully
 
-    private void FillSmartdeviceToLists(){
+    private void FillSmartdeviceToLists() {
 
-       Iterator<SmartDeviceTable> list = SmartDeviceTable.findAll(SmartDeviceTable.class);
-        while (list.hasNext()){
+        deviceModels.clear(); //clear data in side devicemodel lists
+
+        Iterator<SmartDeviceTable> list = SmartDeviceTable.findAll(SmartDeviceTable.class);
+        while (list.hasNext()) {
 
             SmartDeviceTable deviceTable = list.next();
             SmartDeviceModel device = new SmartDeviceModel();
@@ -260,13 +333,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        setupSmartDeviceLists();
+        deviceAdapter.notifyDataSetChanged();
 
-    }
+    } // fill data to lists
 
     private void setupSmartDeviceLists() {
 
-        SmartDeviceAdapter deviceAdapter = new SmartDeviceAdapter(MainActivity.this,deviceModels);
+        deviceAdapter = new SmartDeviceAdapter(MainActivity.this, deviceModels);
         deviceAdapter.setItemClickListener(new SmartDeviceAdapter.onItemClickListener() {
             @Override
             public void itemClick(int position) {
@@ -285,10 +358,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUpdate(final SmartDeviceAdapter.viewholder holder, int position) {
 
-              DatabaseReference root = database.getReference(deviceModels.get(position).getSdid());
+                DatabaseReference root = database.getReference(deviceModels.get(position).getSdid());
 
-              final DatabaseReference uplink = root.child("active").child("uplink");
-              final DatabaseReference ack = root.child("active").child("ack");
+                final DatabaseReference uplink = root.child("active").child("uplink");
+                final DatabaseReference ack = root.child("active").child("ack");
 
                 final Handler handler = new Handler();
 
@@ -311,9 +384,9 @@ public class MainActivity extends AppCompatActivity {
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                                                         int acklink = dataSnapshot.getValue(Integer.class);
-                                                        if (acklink == uplinkdata){
+                                                        if (acklink == uplinkdata) {
                                                             holder.status.setColorFilter(Color.BLUE);
-                                                        }else {
+                                                        } else {
                                                             holder.status.setColorFilter(Color.RED);
                                                         }
 
@@ -326,23 +399,23 @@ public class MainActivity extends AppCompatActivity {
                                                 });
 
                                             }
-                                        },3600);
+                                        }, 60000); // delay 1 mn
 
 
                                     }
                                 });
 
-                        handler.postDelayed(this,5 * 3600);
+                        handler.postDelayed(this, 300000); // delay 5 mn
 
 
                     }
-                }, 2000);
+                }, 2000); //delay 2 sec
 
 
             }
         });
 
-        smartdeviceLists.setLayoutManager(new GridLayoutManager(MainActivity.this,2));
+        smartdeviceLists.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
         smartdeviceLists.setHasFixedSize(true);
         smartdeviceLists.setAdapter(deviceAdapter);
 
@@ -385,6 +458,9 @@ public class MainActivity extends AppCompatActivity {
     void showNeverAskForCamera() {
         Snackbar.make(container, R.string.permission_camera_neverask, Snackbar.LENGTH_LONG).show();
     }
+
+
+
 
 
 }

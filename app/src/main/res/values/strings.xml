@@ -26,5 +26,6 @@
     <string name="temp_and_humi_toolbar_title">Temp and Humi</string>
     <string name="gass_sensor_title">Gass Sensor</string>
     <string name="smart_slarm_title">Smart Alarm</string>
+    <string name="no_device_item">No Device</string>
 
 </resources>

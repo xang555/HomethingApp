@@ -25,4 +25,8 @@
     <color name="status_online">#1E88E5</color>
     <color name="status_offline">#FF0000</color>
 
+    <color name="lamp_status_on">#F9A825</color>
+    <color name="lamp_status_off">#BDBDBD</color>
+
+
 </resources>

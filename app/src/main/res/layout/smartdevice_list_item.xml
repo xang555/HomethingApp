@@ -10,6 +10,9 @@
     android:layout_marginRight="16dp"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="2dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
         <android.support.constraint.ConstraintLayout

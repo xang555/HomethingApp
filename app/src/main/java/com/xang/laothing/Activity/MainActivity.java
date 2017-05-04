@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     private static final int TEMP_AND_HUMI = 1;
     private static final int GASS_SENSOR = 2;
     private static final int SMART_ALARM = 3;
+    public static final String SDID_KEY_EXTRA = "sdid";
 
     @BindView(R.id.maintoolbar)
     Toolbar maintoolbar;
@@ -197,17 +198,36 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     }
 
 
-
     private void handleLogout() {
 
-        SmartDeviceTable.deleteAll(SmartDeviceTable.class); //delete data smart device
-        SmartSwitchTable.deleteAll(SmartSwitchTable.class); // delete data smart switch
-        SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
-        SharePreferentService.SaveToken(MainActivity.this,""); // delete token
 
-        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-        startActivity(intent);
-        finish();
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Logout")
+                .setMessage("Logout from homething ?")
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+
+                SmartDeviceTable.deleteAll(SmartDeviceTable.class); //delete data smart device
+                SmartSwitchTable.deleteAll(SmartSwitchTable.class); // delete data smart switch
+                SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
+                SharePreferentService.SaveToken(MainActivity.this,""); // delete token
+
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+
+
+            }
+        }).show();
+
 
     } // when logout
 
@@ -239,7 +259,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                             }else if (smartDevice.err == 404){
                                 handleAddSmartDeviceFailure("No Device in Homething system , Please try again ");
                             }else if (smartDevice.err == 403){
-                                handleAddSmartDeviceFailure("This smart device is registered, with other user ");
+                                handleAddSmartDeviceFailure("This smart device is registered, with other user, or don't have device in homething system");
                             }else {
                                 handleAddSmartDeviceFailure("Something Wrong , Please try again");
                             }
@@ -481,7 +501,11 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                 switch (deviceModels.get(position).getType()){
                     
                     case SMART_SWITCH:
-                        
+
+                        Intent intent = new Intent(MainActivity.this,SmartSwitchActivity.class);
+                        intent.putExtra(SDID_KEY_EXTRA,deviceModels.get(position).getSdid());
+                        startActivity(intent);
+
                         break;
                     
                     case TEMP_AND_HUMI :

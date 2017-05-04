@@ -27,5 +27,7 @@
     <string name="gass_sensor_title">Gass Sensor</string>
     <string name="smart_slarm_title">Smart Alarm</string>
     <string name="no_device_item">No Device</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_edit">Edit</string>
 
 </resources>

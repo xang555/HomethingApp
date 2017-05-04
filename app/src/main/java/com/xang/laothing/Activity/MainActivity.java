@@ -1,12 +1,14 @@
 package com.xang.laothing.Activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,9 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,12 +32,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.xang.laothing.Adapter.SmartDeviceAdapter;
 import com.xang.laothing.Api.ApiService;
+import com.xang.laothing.Api.reponse.AddSmartDeviceResponse;
+import com.xang.laothing.Api.reponse.DeleteSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DevicesResponse;
+import com.xang.laothing.Api.request.AddSmartDeviceRequest;
+import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
 import com.xang.laothing.Database.SmartDeviceTable;
 import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.Model.SmartDeviceModel;
 import com.xang.laothing.R;
 import com.xang.laothing.Service.AlertDialogService;
+import com.xang.laothing.Service.Depending;
 import com.xang.laothing.Service.RandomService;
 import com.xang.laothing.Service.SharePreferentService;
 
@@ -62,6 +69,11 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
 
     private static final int REQURE_SCAN_QRCODE = 500;
+    private static final int SMART_SWITCH = 0;
+    private static final int TEMP_AND_HUMI = 1;
+    private static final int GASS_SENSOR = 2;
+    private static final int SMART_ALARM = 3;
+
     @BindView(R.id.maintoolbar)
     Toolbar maintoolbar;
     @BindView(R.id.container)
@@ -76,10 +88,15 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     SwipeRefreshLayout smartdeviceRefreshContainer;
     @BindView(R.id.no_device_container)
     FrameLayout noDeviceContainer;
+    private TextView delete;
+    private TextView edit;
 
     private FirebaseDatabase database;
     private List<SmartDeviceModel> deviceModels = new ArrayList<SmartDeviceModel>();
     SmartDeviceAdapter deviceAdapter;
+    private ProgressDialog ptrDialog;
+    private BottomSheetDialog bottomSheetDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +123,22 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         } else {
             FillSmartdeviceToLists();
         }
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        View view = getLayoutInflater().inflate(R.layout.bottomsheet_container,null,false);
+        bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+        bottomSheetDialog.setContentView(view);
+
+        delete = (TextView)view.findViewById(R.id.menu_bottom_sheet_delete);
+        edit = (TextView)view.findViewById(R.id.menu_bottom_sheet_edit);
+
+
 
     }
 
@@ -139,7 +172,6 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     } //scan qr coe
 
 
-
     @Override
     public void onRefresh() {
 
@@ -164,6 +196,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private void handleLogout() {
 
         SmartDeviceTable.deleteAll(SmartDeviceTable.class); //delete data smart device
@@ -180,9 +214,94 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     private void HandelScanQrcodeComplete(Intent data) {
 
         String qrcodeValue = data.getStringExtra(ScanQrcodeViewer.QR_CODE_VALUE);
-        Toast.makeText(getApplicationContext(), qrcodeValue, Toast.LENGTH_LONG).show();
+        ptrDialog = Depending.showDependingProgressDialog(MainActivity.this,"Searching Device ...");
+        addSmartDevice(qrcodeValue); // add smart device
 
     } // handle scan QR code complete
+
+
+    private void addSmartDevice(String sdid){
+
+        AddSmartDeviceRequest request = new AddSmartDeviceRequest(sdid);
+        ApiService.getRouterServiceApi().AddSmartDevice(SharePreferentService.getToken(MainActivity.this),request)
+                .enqueue(new Callback<AddSmartDeviceResponse>() {
+                    @Override
+                    public void onResponse(Call<AddSmartDeviceResponse> call, Response<AddSmartDeviceResponse> response) {
+
+                        ptrDialog.dismiss();
+
+                        if (response !=null && response.isSuccessful()){
+
+                            AddSmartDeviceResponse smartDevice = response.body();
+
+                            if (smartDevice.err == 200){
+                                handleAddSmartDeviceSuccessfully(smartDevice);
+                            }else if (smartDevice.err == 404){
+                                handleAddSmartDeviceFailure("No Device in Homething system , Please try again ");
+                            }else if (smartDevice.err == 403){
+                                handleAddSmartDeviceFailure("This smart device is registered, with other user ");
+                            }else {
+                                handleAddSmartDeviceFailure("Something Wrong , Please try again");
+                            }
+
+                        }else {
+                            handleAddSmartDeviceFailure("Something Wrong , Please try again");
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<AddSmartDeviceResponse> call, Throwable t) {
+                        ptrDialog.dismiss();
+                        handleAddSmartDeviceFailure(t.getMessage());
+
+                    }
+                });
+
+
+
+    } // addd smart device
+
+    private void handleAddSmartDeviceFailure(String message) {
+
+        AlertDialogService.ShowAlertDialog(MainActivity.this,"Searching Device Failure",message);
+
+    } // add smart device failure
+
+    private void handleAddSmartDeviceSuccessfully(AddSmartDeviceResponse smartDevice) {
+
+        AddSmartDeviceResponse.Device sd = smartDevice.device;
+
+        if (sd !=null){
+
+            String name = "";
+            switch (sd.type) {
+
+                case 0:
+                    name = "Smart device " + sd.sdid;
+                    break;
+                case 1:
+                    name = "Temp and Humi " + sd.sdid;
+                    break;
+                case 2:
+                    name = "Gas Sensor " + sd.sdid;
+                    break;
+                case 3:
+                    name = "Smart Alarm " + sd.sdid;
+
+            }
+
+            SmartDeviceTable deviceTable = new SmartDeviceTable(sd.sdid, sd.regis, sd.type, name);
+            deviceTable.save();
+
+            FillSmartdeviceToLists(); //fill data smart device to lists
+
+        }
+
+
+    } // add smart device successfully
+
 
     private void LoadSmartDevices() {
 
@@ -333,6 +452,20 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         }
 
+        if (noDeviceContainer.getVisibility() == View.VISIBLE){
+            noDeviceContainer.setVisibility(View.INVISIBLE);
+        }
+
+        if (smartdeviceLists.getVisibility() == View.INVISIBLE){
+            smartdeviceLists.setVisibility(View.VISIBLE);
+        }
+
+        if (deviceModels.size() <=0 ){
+           if (noDeviceContainer.getVisibility() == View.INVISIBLE || noDeviceContainer.getVisibility() == View.GONE){
+               noDeviceContainer.setVisibility(View.VISIBLE);
+           }
+        }
+
         deviceAdapter.notifyDataSetChanged();
 
     } // fill data to lists
@@ -344,12 +477,59 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             @Override
             public void itemClick(int position) {
 
+                
+                switch (deviceModels.get(position).getType()){
+                    
+                    case SMART_SWITCH:
+                        
+                        break;
+                    
+                    case TEMP_AND_HUMI :
+                        
+                        break;
+                    
+                    case GASS_SENSOR :
+                        
+                        break;
+                    
+                    case SMART_ALARM :
+                        
+                        break;
+                    
+                }
+                
+                
             }
         });
 
         deviceAdapter.setOnSettingClickListener(new SmartDeviceAdapter.onSettingClickListener() {
             @Override
-            public void onClick(int position) {
+            public void onClick(final int position) {
+
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        bottomSheetDialog.hide();
+
+                        handleDeleteItemClick(position);
+
+                    }
+                });
+
+                edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.hide();
+
+                        handleEditItem(position);
+
+                    }
+                });
+
+
+                bottomSheetDialog.show(); // show bottom sheet
+
 
             }
         });
@@ -363,9 +543,10 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                 final DatabaseReference uplink = root.child("active").child("uplink");
                 final DatabaseReference ack = root.child("active").child("ack");
 
-                final Handler handler = new Handler();
+                final Handler uplinkhandler = new Handler();
+                final Handler ackHandler = new Handler();
 
-                handler.postDelayed(new Runnable() {
+                uplinkhandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
@@ -375,7 +556,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                                     @Override
                                     public void onSuccess(Void aVoid) {
 
-                                        new Handler().postDelayed(new Runnable() {
+                                        ackHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
 
@@ -405,7 +586,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                                     }
                                 });
 
-                        handler.postDelayed(this, 300000); // delay 5 mn
+                        uplinkhandler.postDelayed(this, 300000); // delay 5 mn
 
 
                     }
@@ -420,6 +601,121 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         smartdeviceLists.setAdapter(deviceAdapter);
 
     } // setup lists
+
+
+    private void handleEditItem(final int position) {
+
+
+        View dialoginputview = getLayoutInflater().inflate(R.layout.layout_change_smatrdevice_name,null,false);
+        final EditText device_name = (EditText)dialoginputview.findViewById(R.id.input_smart_device_name);
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Change Device Name")
+                .setView(dialoginputview)
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String strname = device_name.getText().toString();
+                        if (strname.trim().length() <=0 ){
+                            Snackbar.make(container,"Device Name is empty, please try again",Snackbar.LENGTH_LONG).show();
+                            return;
+                        }
+
+                      List<SmartDeviceTable> deviceTables = SmartDeviceTable.find(SmartDeviceTable.class,"sdid = ?",deviceModels.get(position).getSdid());
+                        deviceTables.get(0).name = strname;
+                        deviceTables.get(0).save();
+
+                        FillSmartdeviceToLists(); // update lists
+
+                        Snackbar.make(container,"Update device name successfully",Snackbar.LENGTH_LONG).show();
+
+                    }
+                }).show();
+
+
+    } // edit item
+
+    private void handleDeleteItemClick(final int position) {
+
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Delete Smart device")
+                .setMessage("Do you want to delete " + deviceModels.get(position).getName()+" ?")
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                ptrDialog = Depending.showDependingProgressDialog(MainActivity.this,"Deleting ...");
+                handleDeleteItem(position);
+            }
+        }).show();
+
+
+    } // delete item
+
+    private void handleDeleteItem(final int position) {
+
+
+        DeleteSmartDeviceRequest request = new DeleteSmartDeviceRequest(deviceModels.get(position).getSdid());
+        ApiService.getRouterServiceApi().DeleteSmartDevice(SharePreferentService.getToken(MainActivity.this),request)
+                .enqueue(new Callback<DeleteSmartDeviceResponse>() {
+                    @Override
+                    public void onResponse(Call<DeleteSmartDeviceResponse> call, Response<DeleteSmartDeviceResponse> response) {
+
+                        ptrDialog.dismiss();
+
+                        if (response != null && response.isSuccessful()){
+
+                            DeleteSmartDeviceResponse deleteSmartDevice = response.body();
+                            if (deleteSmartDevice.err == 0 ){
+                                handleDeleteSmartDeviceSuccess(deviceModels.get(position).getSdid());
+                            }else {
+
+                                handleAddSmartDeviceFailure("Can not delete smart device, please try again");
+                            }
+
+                        }else{
+                            handleAddSmartDeviceFailure("something wrong, please try again");
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<DeleteSmartDeviceResponse> call, Throwable t) {
+                        ptrDialog.dismiss();
+                        handleDeleteSmartDeviceFailure(t.getMessage());
+                    }
+                });
+
+
+    } // handle delete smart device from database
+
+    private void handleDeleteSmartDeviceFailure(String message) {
+        AlertDialogService.ShowAlertDialog(MainActivity.this,"Delete Smart device",message);
+    }// delete smart device failure
+
+    private void handleDeleteSmartDeviceSuccess(String sdid) {
+
+            int deleteitem = SmartDeviceTable.deleteAll(SmartDeviceTable.class,"sdid = ?",sdid);
+            if (deleteitem > 0){
+                FillSmartdeviceToLists();
+            }
+
+    } //delete smart device successfully
+
+
 
     /*---------------------- require permission ---------------*/
     @NeedsPermission(Manifest.permission.CAMERA)

@@ -1,7 +1,11 @@
 package com.xang.laothing.Api;
 
+import com.xang.laothing.Api.reponse.AddSmartDeviceResponse;
+import com.xang.laothing.Api.reponse.DeleteSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DevicesResponse;
 import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
+import com.xang.laothing.Api.request.AddSmartDeviceRequest;
+import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
 import com.xang.laothing.Api.request.LoginRequest;
 import com.xang.laothing.Api.request.RequestSignup;
 
@@ -27,6 +31,12 @@ public interface Router {
 
     @GET("devices")
     Call<DevicesResponse> getDeviceByUser(@Header("Authorization") String token);
+
+    @POST("app/device/add")
+    Call<AddSmartDeviceResponse> AddSmartDevice(@Header("Authorization") String token, @Body AddSmartDeviceRequest request);
+
+    @POST("user/device/delete")
+    Call<DeleteSmartDeviceResponse> DeleteSmartDevice(@Header("Authorization") String token, @Body DeleteSmartDeviceRequest request);
 
 
 }

@@ -20,11 +20,13 @@ public class DevicesResponse {
         @SerializedName("_id")
         public String _id;
         @SerializedName("sdid")
-       public String sdid;
+        public String sdid;
         @SerializedName("type")
-       public int type;
+        public int type;
+        @SerializedName("nicname")
+        public String nicname;
         @SerializedName("regis")
-       public boolean regis;
+        public boolean regis;
 
     }
 

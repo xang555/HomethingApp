@@ -25,6 +25,8 @@ public class AddSmartDeviceResponse {
         public int type;
         @SerializedName("regis")
         public boolean regis;
+        @SerializedName("nicname")
+        public String name;
 
     }
 

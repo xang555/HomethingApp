@@ -7,7 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.R;
+import com.xang.laothing.Service.SharePreferentService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +37,8 @@ public class SmartSwitchActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+
+        InitSmartSwitchDatabase(); //init databse
 
     }
 
@@ -68,6 +72,17 @@ public class SmartSwitchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    private void InitSmartSwitchDatabase(){
+
+        if (SharePreferentService.isFirstUseSmartSwitch(SmartSwitchActivity.this)){
+            SmartSwitchTable switchTable = new SmartSwitchTable(sdid,"Switch One","Switch Two","Switch Three","Switch Four");
+            switchTable.save();
+
+            SharePreferentService.setIsFirstLoadSmartDevice(SmartSwitchActivity.this,false);
+
+        }
+    }
 
 
 

@@ -14,6 +14,8 @@ public class SharePreferentService {
     private static final String TOKEN = "token";
     private static final String IS_FIRST_LOAD_SMART_DEVICE = "is_first_load";
     private static final String IS_FIRST = "is_first";
+    private static final String IS_USE_SMART_SWITCH = "use_switch";
+    private static final String IS_USE = "f_use";
 
     public static void SaveToken(Context context , String token){
 
@@ -42,6 +44,18 @@ public class SharePreferentService {
     public static boolean isFirstLoad(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(IS_FIRST_LOAD_SMART_DEVICE,Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(IS_FIRST,true);
+    }
+
+    public static void setIsFirstLoadSmartDevice(Context context, boolean isuse){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(IS_USE_SMART_SWITCH,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(IS_USE,isuse);
+        editor.apply();
+    }
+
+    public static boolean isFirstUseSmartSwitch(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(IS_USE_SMART_SWITCH,Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(IS_USE,true);
     }
 
 }

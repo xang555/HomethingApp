@@ -32,11 +32,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.xang.laothing.Adapter.SmartDeviceAdapter;
 import com.xang.laothing.Api.ApiService;
+import com.xang.laothing.Api.Router;
 import com.xang.laothing.Api.reponse.AddSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DeleteSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DevicesResponse;
+import com.xang.laothing.Api.reponse.EditSmartDeviceResponse;
 import com.xang.laothing.Api.request.AddSmartDeviceRequest;
 import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
+import com.xang.laothing.Api.request.EditSmartDeviceRequest;
 import com.xang.laothing.Database.SmartDeviceTable;
 import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.Model.SmartDeviceModel;
@@ -140,9 +143,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         edit = (TextView)view.findViewById(R.id.menu_bottom_sheet_edit);
 
 
-
     }
-
 
 
     @Override
@@ -219,11 +220,10 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                 SmartSwitchTable.deleteAll(SmartSwitchTable.class); // delete data smart switch
                 SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
                 SharePreferentService.SaveToken(MainActivity.this,""); // delete token
-
+                SharePreferentService.setIsFirstLoadSmartDevice(MainActivity.this,true);
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
                 finish();
-
 
             }
         }).show();
@@ -293,35 +293,12 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         AddSmartDeviceResponse.Device sd = smartDevice.device;
 
-        if (sd !=null){
-
-            String name = "";
-            switch (sd.type) {
-
-                case 0:
-                    name = "Smart device " + sd.sdid;
-                    break;
-                case 1:
-                    name = "Temp and Humi " + sd.sdid;
-                    break;
-                case 2:
-                    name = "Gas Sensor " + sd.sdid;
-                    break;
-                case 3:
-                    name = "Smart Alarm " + sd.sdid;
-
-            }
-
-            SmartDeviceTable deviceTable = new SmartDeviceTable(sd.sdid, sd.regis, sd.type, name);
+            SmartDeviceTable deviceTable = new SmartDeviceTable(sd.sdid, sd.regis, sd.type, sd.name);
             deviceTable.save();
 
             FillSmartdeviceToLists(); //fill data smart device to lists
 
-        }
-
-
     } // add smart device successfully
-
 
     private void LoadSmartDevices() {
 
@@ -413,22 +390,6 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         for (int i = 0; i < devicelistes.size(); i++) {
 
             DevicesResponse.deviceLists device = devicelistes.get(i);
-            String name = "";
-            switch (device.type) {
-
-                case 0:
-                    name = "Smart device " + device.sdid;
-                    break;
-                case 1:
-                    name = "Temp and Humi " + device.sdid;
-                    break;
-                case 2:
-                    name = "Gas Sensor " + device.sdid;
-                    break;
-                case 3:
-                    name = "Smart Alarm " + device.sdid;
-
-            }
 
             boolean ishave = false;
 
@@ -442,7 +403,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             }
 
             if (!ishave) {
-                SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.regis, device.type, name);
+                SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.regis, device.type, device.nicname);
                 deviceTable.save();
             }
 
@@ -563,10 +524,12 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             public void onUpdate(final SmartDeviceAdapter.viewholder holder, int position) {
 
                 DatabaseReference root = database.getReference(deviceModels.get(position).getSdid());
+                root.keepSynced(true);
 
                 final DatabaseReference uplink = root.child("active").child("uplink");
+                uplink.keepSynced(true);
                 final DatabaseReference ack = root.child("active").child("ack");
-
+                uplink.keepSynced(true);
                 final Handler uplinkhandler = new Handler();
                 final Handler ackHandler = new Handler();
 
@@ -646,25 +609,68 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        String strname = device_name.getText().toString();
+                        final String strname = device_name.getText().toString();
                         if (strname.trim().length() <=0 ){
                             Snackbar.make(container,"Device Name is empty, please try again",Snackbar.LENGTH_LONG).show();
                             return;
                         }
 
-                      List<SmartDeviceTable> deviceTables = SmartDeviceTable.find(SmartDeviceTable.class,"sdid = ?",deviceModels.get(position).getSdid());
-                        deviceTables.get(0).name = strname;
-                        deviceTables.get(0).save();
+                        ptrDialog = Depending.showDependingProgressDialog(MainActivity.this,"Editing ...");
 
-                        FillSmartdeviceToLists(); // update lists
+                        EditSmartDeviceRequest request = new EditSmartDeviceRequest(deviceModels.get(position).getSdid(),strname);
+                        ApiService.getRouterServiceApi().EditSmartDevice(SharePreferentService.getToken(MainActivity.this),request)
+                                .enqueue(new Callback<EditSmartDeviceResponse>() {
+                                    @Override
+                                    public void onResponse(Call<EditSmartDeviceResponse> call, Response<EditSmartDeviceResponse> response) {
 
-                        Snackbar.make(container,"Update device name successfully",Snackbar.LENGTH_LONG).show();
+                                        ptrDialog.dismiss();
+
+                                        if (response!=null && response.isSuccessful()){
+
+                                            EditSmartDeviceResponse editSmartDevice = response.body();
+                                            if (editSmartDevice.err == 0){
+                                                handleEditSmartDeviceSuccessfully(strname,deviceModels.get(position).getSdid());
+                                            }else {
+                                                handleEditSmartDeviceFailure("");
+                                            }
+
+                                        }else {
+                                            handleEditSmartDeviceFailure("");
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<EditSmartDeviceResponse> call, Throwable t) {
+                                        ptrDialog.dismiss();
+                                        handleEditSmartDeviceFailure(t.getMessage());
+                                    }
+                                });
 
                     }
                 }).show();
 
 
-    } // edit item
+    } // edit item smart device
+
+    private void handleEditSmartDeviceFailure(String msg) {
+
+        Snackbar.make(container,"Update device name Failure, Please try again",Snackbar.LENGTH_LONG).show();
+
+    } //handle edit smart device failure
+
+    private void handleEditSmartDeviceSuccessfully(String strname, String sdid) {
+
+        List<SmartDeviceTable> deviceTables = SmartDeviceTable.find(SmartDeviceTable.class,"sdid = ?",sdid);
+        deviceTables.get(0).name = strname;
+        deviceTables.get(0).save();
+
+        FillSmartdeviceToLists(); // update lists
+
+        Snackbar.make(container,"Update device name successfully",Snackbar.LENGTH_LONG).show();
+
+
+    } //handle edit smart device successfully
 
     private void handleDeleteItemClick(final int position) {
 
@@ -738,7 +744,6 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             }
 
     } //delete smart device successfully
-
 
 
     /*---------------------- require permission ---------------*/

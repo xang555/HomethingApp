@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,10 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.Offline.SmartSwitchOfflineMode;
 import com.xang.laothing.Offline.request.SmartSwitchOfflineRequest;
 import com.xang.laothing.Offline.response.SmatrtSwitchOfflineResponse;
 import com.xang.laothing.R;
+
+import java.util.List;
 
 import at.markushi.ui.CircleButton;
 import butterknife.BindView;
@@ -102,10 +106,10 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     private boolean settingmode = true; // true is online / false offline
     private String sdid;
 
-    boolean switchOne_button_is_active = false;
-    boolean switchTwo_button_is_active = false;
-    boolean switchThree_button_is_active = false;
-    boolean switchFour_button_is_active = false;
+    boolean switchOne_button_is_active = true;
+    boolean switchTwo_button_is_active = true;
+    boolean switchThree_button_is_active = true;
+    boolean switchFour_button_is_active = true;
 
     DatabaseReference switchOneItem;
     DatabaseReference switchTwoItem;
@@ -145,7 +149,6 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
         SubscribeEven(); // online event
 
-
     }
 
     @Override
@@ -170,9 +173,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         unSubscribeEven(); // offline event
-
     }
 
     @Override
@@ -449,12 +450,17 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         }
     }
 
+
+
+
+
     private void handleswitchFourButtonClick() {
 
         if (settingmode) { //online
             handleswitchFourOnline();
         } else {
-            switchFour_button_is_active = handleswitchOffline("L4",!switchFour_button_is_active ? "1":"0",switchFourButton);
+            String  cmd = !switchFour_button_is_active ? "1":"0";
+            switchFour_button_is_active = handleswitchOffline("L4",cmd,switchFourButton,lampSwitchFour);
         }
 
     } //handle switch four click
@@ -463,7 +469,8 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         if (settingmode) { //online
             handleswitchThreeOnline();
         } else {
-            switchThree_button_is_active = handleswitchOffline("L3",!switchThree_button_is_active ? "1":"0",switchThreeButton);
+            String  cmd = !switchThree_button_is_active ? "1":"0";
+            switchThree_button_is_active = handleswitchOffline("L3",cmd,switchThreeButton,lampSwitchThree);
         }
 
     } // handle switch three click
@@ -473,7 +480,8 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         if (settingmode) { //online
             handleswitchTwoOnline();
         } else {
-            switchTwo_button_is_active = handleswitchOffline("L2",!switchTwo_button_is_active ? "1":"0",switchTwoButton);
+            String  cmd = !switchTwo_button_is_active ? "1":"0";
+            switchTwo_button_is_active = handleswitchOffline("L2",cmd,switchTwoButton,lampSwitchTwo);
         }
 
     } // handle switch two click
@@ -484,17 +492,22 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         if (settingmode) { //online
             handleswitchOneOnline();
         } else {
-            switchOne_button_is_active = handleswitchOffline("L1",!switchOne_button_is_active ? "1":"0",switchOneButton);
+
+            String  cmd = !switchOne_button_is_active ? "1":"0";
+            Toast.makeText(SmartSwitchControllerActivity.this,cmd,Toast.LENGTH_SHORT).show();
+            switchOne_button_is_active = handleswitchOffline("L1",cmd,switchOneButton,lampSwitchOne);
+
         }
+
 
     } //handle switch one button click
 
-    private boolean handleswitchOffline(String swn , String cmd, final CircleButton button) {
+    private boolean handleswitchOffline(String swn , String cmd, final CircleButton button, final ImageView lamp) {
 
         final boolean[] state = {false};
 
-        SmartSwitchOfflineRequest request = new SmartSwitchOfflineRequest(swn,cmd);
-        SmartSwitchOfflineMode.offlineService().SendCommand(request)
+                 SmartSwitchOfflineRequest request = new SmartSwitchOfflineRequest(swn,cmd);
+                SmartSwitchOfflineMode.offlineService().SendCommand(request)
                 .enqueue(new Callback<SmatrtSwitchOfflineResponse>() {
                     @Override
                     public void onResponse(Call<SmatrtSwitchOfflineResponse> call, Response<SmatrtSwitchOfflineResponse> response) {
@@ -502,10 +515,14 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                         if (response !=null && response.isSuccessful()){
                             SmatrtSwitchOfflineResponse switchOffline = response.body();
                             if (switchOffline.state.equals("1")){
-                                button.setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.buttonActive));
+                                Toast.makeText(SmartSwitchControllerActivity.this,"one  " + switchOffline.state,Toast.LENGTH_SHORT).show();
+                                button.setColor(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.buttonActive));
+                                lamp.setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.lamp_status_on));
                                 state[0] = true;
                             }else{
-                                button.setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.buttonnonActive));
+                                Toast.makeText(SmartSwitchControllerActivity.this,"off  " + switchOffline.state,Toast.LENGTH_SHORT).show();
+                                button.setColor(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.buttonnonActive));
+                                lamp.setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.lamp_status_off));
                                 state[0] = false;
                             }
 
@@ -545,7 +562,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                         Snackbar.make(switchControllerContainer,e.getMessage(),Snackbar.LENGTH_SHORT).show();
                     }
                 });
-    } // switch two offline mode
+    } // switch two online mode
 
 
     private void handleswitchThreeOnline() {
@@ -557,7 +574,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                         Snackbar.make(switchControllerContainer,e.getMessage(),Snackbar.LENGTH_SHORT).show();
                     }
                 });
-    } // switch three offline mode
+    } // switch three online mode
 
     private void handleswitchFourOnline() {
         DatabaseReference switchOne = database.getReference(sdid).child("status").child("L4").child("status");
@@ -568,7 +585,9 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                         Snackbar.make(switchControllerContainer,e.getMessage(),Snackbar.LENGTH_SHORT).show();
                     }
                 });
-    } // switch four offline mode
+    } // switch four online mode
+
+
 
 
 }

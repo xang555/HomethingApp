@@ -17,7 +17,6 @@ public class SmartSwitchTable extends SugarRecord {
     public String btnThreeName;
     public String btnFourName;
 
-    SmartDeviceTable smartDevice;
 
     public SmartSwitchTable(){}
 

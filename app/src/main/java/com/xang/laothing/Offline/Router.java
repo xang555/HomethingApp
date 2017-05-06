@@ -1,10 +1,10 @@
 package com.xang.laothing.Offline;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
-import com.xang.laothing.Offline.request.SmartSwitchOfflineRequest;
 import com.xang.laothing.Offline.response.SmatrtSwitchOfflineResponse;
 
 /**
@@ -13,7 +13,8 @@ import com.xang.laothing.Offline.response.SmatrtSwitchOfflineResponse;
 
 public interface Router {
 
+    @FormUrlEncoded
     @POST("controller")
-    Call<SmatrtSwitchOfflineResponse> SendCommand(@Body SmartSwitchOfflineRequest request);
+    Call<SmatrtSwitchOfflineResponse> SendCommand(@Field("swn") String swn , @Field("cmd") String cmd);
 
 }

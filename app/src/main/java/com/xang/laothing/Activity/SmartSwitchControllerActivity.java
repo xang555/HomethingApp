@@ -1,5 +1,7 @@
 package com.xang.laothing.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,13 +11,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,13 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.Offline.SmartSwitchOfflineMode;
-import com.xang.laothing.Offline.request.SmartSwitchOfflineRequest;
 import com.xang.laothing.Offline.response.SmatrtSwitchOfflineResponse;
 import com.xang.laothing.R;
-
-import java.util.List;
 
 import at.markushi.ui.CircleButton;
 import butterknife.BindView;
@@ -106,10 +104,10 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     private boolean settingmode = true; // true is online / false offline
     private String sdid;
 
-    boolean switchOne_button_is_active = true;
-    boolean switchTwo_button_is_active = true;
-    boolean switchThree_button_is_active = true;
-    boolean switchFour_button_is_active = true;
+    boolean switchOne_button_is_active = false;
+    boolean switchTwo_button_is_active = false;
+    boolean switchThree_button_is_active = false;
+    boolean switchFour_button_is_active = false;
 
     DatabaseReference switchOneItem;
     DatabaseReference switchTwoItem;
@@ -163,9 +161,11 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                     SubscribeEven(); // online event
                 }else {
                     unSubscribeEven(); // offline event
+                    initOfflineStatus();
                 }
             }
         });
+
 
     }
 
@@ -232,6 +232,22 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         SubscribeStatusChange();
     } //SubscribeEven
 
+
+    private void initOfflineStatus(){
+
+        CircleButton button[] = {switchOneButton,switchTwoButton,switchThreeButton,switchFourButton};
+        TextView status[] = {switchoneStatus,switchTwoStatus,switchThreeStatus,switchFourStatus};
+        ImageView img[] = {lampSwitchOne,lampSwitchTwo,lampSwitchThree,lampSwitchFour};
+
+        for (int i =0 ;i < button.length;i++){
+            button[i].setColor(ContextCompat.getColor(SmartSwitchControllerActivity.this, R.color.buttonnonActive));
+            img[i].setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this, R.color.lamp_status_off));
+            status[i].setTextColor(Color.RED);
+            status[i].setText("OFF");
+        }
+
+
+    } //init offline status
 
     private void SubscribeAckStateChange() {
 
@@ -451,16 +467,13 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     }
 
 
-
-
-
+    /*--------- handle button click--------------*/
     private void handleswitchFourButtonClick() {
 
         if (settingmode) { //online
             handleswitchFourOnline();
         } else {
-            String  cmd = !switchFour_button_is_active ? "1":"0";
-            switchFour_button_is_active = handleswitchOffline("L4",cmd,switchFourButton,lampSwitchFour);
+            showchoseCommandLists("L4",switchFourButton,lampSwitchFour,switchFourStatus);
         }
 
     } //handle switch four click
@@ -469,8 +482,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         if (settingmode) { //online
             handleswitchThreeOnline();
         } else {
-            String  cmd = !switchThree_button_is_active ? "1":"0";
-            switchThree_button_is_active = handleswitchOffline("L3",cmd,switchThreeButton,lampSwitchThree);
+            showchoseCommandLists("L3",switchThreeButton,lampSwitchThree,switchThreeStatus);
         }
 
     } // handle switch three click
@@ -480,50 +492,84 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         if (settingmode) { //online
             handleswitchTwoOnline();
         } else {
-            String  cmd = !switchTwo_button_is_active ? "1":"0";
-            switchTwo_button_is_active = handleswitchOffline("L2",cmd,switchTwoButton,lampSwitchTwo);
+            showchoseCommandLists("L2",switchTwoButton,lampSwitchTwo,switchTwoStatus);
         }
 
     } // handle switch two click
-
 
     private void handleswitchOneButtonClick() {
 
         if (settingmode) { //online
             handleswitchOneOnline();
         } else {
-
-            String  cmd = !switchOne_button_is_active ? "1":"0";
-            Toast.makeText(SmartSwitchControllerActivity.this,cmd,Toast.LENGTH_SHORT).show();
-            switchOne_button_is_active = handleswitchOffline("L1",cmd,switchOneButton,lampSwitchOne);
-
+            showchoseCommandLists("L1",switchOneButton,lampSwitchOne,switchoneStatus);
         }
-
 
     } //handle switch one button click
 
-    private boolean handleswitchOffline(String swn , String cmd, final CircleButton button, final ImageView lamp) {
+    /*-------------offline--------------*/
 
-        final boolean[] state = {false};
+    private void showchoseCommandLists(final String swn , final CircleButton button, final ImageView lamp, final TextView status){
 
-                 SmartSwitchOfflineRequest request = new SmartSwitchOfflineRequest(swn,cmd);
-                SmartSwitchOfflineMode.offlineService().SendCommand(request)
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SmartSwitchControllerActivity.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("Turn ON");
+        arrayAdapter.add("Turn OFF");
+
+        AlertDialog.Builder alertshoose = new AlertDialog.Builder(SmartSwitchControllerActivity.this)
+                .setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (which){
+                            case 0 :
+                                handleswitchOffline(swn,"1",button,lamp,status);
+                                break;
+                            case 1 :
+                                handleswitchOffline(swn,"0",button,lamp,status);
+                                break;
+
+                        }
+
+                        dialog.dismiss();
+
+                    }
+                });
+
+            alertshoose.show();
+
+    }
+
+    private void handleswitchOffline(final String swn , String cmd, final CircleButton button, final ImageView lamp, final TextView status) {
+
+                SmartSwitchOfflineMode.offlineService().SendCommand(swn,cmd)
                 .enqueue(new Callback<SmatrtSwitchOfflineResponse>() {
                     @Override
                     public void onResponse(Call<SmatrtSwitchOfflineResponse> call, Response<SmatrtSwitchOfflineResponse> response) {
 
                         if (response !=null && response.isSuccessful()){
                             SmatrtSwitchOfflineResponse switchOffline = response.body();
+
                             if (switchOffline.state.equals("1")){
-                                Toast.makeText(SmartSwitchControllerActivity.this,"one  " + switchOffline.state,Toast.LENGTH_SHORT).show();
                                 button.setColor(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.buttonActive));
                                 lamp.setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.lamp_status_on));
-                                state[0] = true;
+                                status.setTextColor(Color.BLUE);
+                                status.setText("ON");
+
                             }else{
-                                Toast.makeText(SmartSwitchControllerActivity.this,"off  " + switchOffline.state,Toast.LENGTH_SHORT).show();
                                 button.setColor(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.buttonnonActive));
                                 lamp.setColorFilter(ContextCompat.getColor(SmartSwitchControllerActivity.this,R.color.lamp_status_off));
-                                state[0] = false;
+                                status.setTextColor(Color.RED);
+                                status.setText("OFF");
+                            }
+
+                            if (swn.equals("L1")){
+                                switchOne_button_is_active = switchOffline.state.equals("1");
+                            }else if (swn.equals("L2")){
+                                switchTwo_button_is_active = switchOffline.state.equals("1");
+                            }else if (swn.equals("L3")){
+                                switchThree_button_is_active = switchOffline.state.equals("1");
+                            }else if (swn.equals("L4")){
+                                switchFour_button_is_active = switchOffline.state.equals("1");
                             }
 
                         }
@@ -536,10 +582,11 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                     }
                 });
 
-        return state[0];
 
     } // switch  offline mode
 
+
+    /*-------------online--------------*/
     private void handleswitchOneOnline() {
 
         DatabaseReference switchOne = database.getReference(sdid).child("status").child("L1").child("status");
@@ -564,7 +611,6 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                 });
     } // switch two online mode
 
-
     private void handleswitchThreeOnline() {
         DatabaseReference switchOne = database.getReference(sdid).child("status").child("L3").child("status");
         switchOne.setValue(!switchThree_button_is_active ? 1 : 0)
@@ -586,7 +632,6 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
                     }
                 });
     } // switch four online mode
-
 
 
 

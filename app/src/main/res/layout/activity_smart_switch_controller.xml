@@ -122,6 +122,7 @@
                 android:text="Bed room"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:maxLength="15"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_one"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="29dp" />
@@ -147,16 +148,15 @@
                 android:layout_width="66dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="105dp"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="24dp"
                 android:src="@drawable/shut_down_icon"
                 app:cb_color="@color/buttonnonActive"
                 app:cb_pressedRingWidth="8dip"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/switch_one_name"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.888" />
+                app:layout_constraintVertical_bias="0.0"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent" />
 
 
         </android.support.constraint.ConstraintLayout>
@@ -221,6 +221,7 @@
                 android:text="Bed room"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:maxLength="15"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_two"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -244,17 +245,16 @@
                 android:layout_width="66dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="105dp"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="24dp"
                 android:id="@+id/switch_two_button"
                 android:src="@drawable/shut_down_icon"
                 app:cb_color="@color/buttonnonActive"
                 app:cb_pressedRingWidth="8dip"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/switch_two_name"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.888" />
+                app:layout_constraintVertical_bias="0.888"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent" />
 
 
         </android.support.constraint.ConstraintLayout>
@@ -319,6 +319,7 @@
                 android:text="Bed room"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:maxLength="15"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_three"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -342,17 +343,16 @@
                 android:layout_width="66dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="105dp"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="24dp"
                 android:src="@drawable/shut_down_icon"
                 app:cb_color="@color/buttonnonActive"
                 android:id="@+id/switch_three_button"
                 app:cb_pressedRingWidth="8dip"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/switch_three_name"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.888" />
+                app:layout_constraintVertical_bias="0.888"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent" />
 
 
         </android.support.constraint.ConstraintLayout>
@@ -420,6 +420,7 @@
                 android:text="Bed room"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:maxLength="15"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_four"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -428,7 +429,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="53dp"
+                android:layout_marginLeft="64dp"
                 android:layout_marginStart="53dp"
                 android:layout_marginTop="3dp"
                 android:text="ON"
@@ -443,17 +444,16 @@
                 android:layout_width="66dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="105dp"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="24dp"
                 android:src="@drawable/shut_down_icon"
                 android:id="@+id/switch_four_button"
                 app:cb_color="@color/buttonnonActive"
                 app:cb_pressedRingWidth="8dip"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/switch_four_name"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.888" />
+                app:layout_constraintVertical_bias="0.888"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent" />
 
 
         </android.support.constraint.ConstraintLayout>

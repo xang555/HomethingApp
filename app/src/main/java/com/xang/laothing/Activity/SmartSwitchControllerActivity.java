@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -101,6 +103,11 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     private ValueEventListener switchThreeButtonValueEventListener;
     private ValueEventListener switchFourButtonValueEventListener;
 
+    private ValueEventListener switchOneTextLableValueEventListener;
+    private ValueEventListener switchTwoTextLableValueEventListener;
+    private ValueEventListener switchThreeTextLableValueEventListener;
+    private ValueEventListener switchFourTextLableValueEventListener;
+
     private boolean settingmode = true; // true is online / false offline
     private String sdid;
 
@@ -119,6 +126,16 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     DatabaseReference switchThree;
     DatabaseReference switchFour;
 
+
+    DatabaseReference switchOneTextLabel;
+    DatabaseReference switchTwoTextLable;
+    DatabaseReference switchThreeTextLable;
+    DatabaseReference switchFourTextLable;
+
+    private BottomSheetDialog bottomSheetDialog;
+    private TextView delete;
+    private TextView edit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +146,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         maintoolbar.setTitle("");
         setSupportActionBar(maintoolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        bottomSheetDialog = new BottomSheetDialog(SmartSwitchControllerActivity.this);
 
         Intent intent = getIntent();
         sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
@@ -144,6 +162,11 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         switchTwo = database.getReference(sdid).child("status").child("L2").child("status");
         switchThree = database.getReference(sdid).child("status").child("L3").child("status");
         switchFour = database.getReference(sdid).child("status").child("L4").child("status");
+
+        switchOneTextLabel = database.getReference(sdid).child("name").child("L1");
+        switchTwoTextLable = database.getReference(sdid).child("name").child("L2");
+        switchThreeTextLable = database.getReference(sdid).child("name").child("L3");
+        switchFourTextLable = database.getReference(sdid).child("name").child("L4");
 
         SubscribeEven(); // online event
 
@@ -166,6 +189,12 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
             }
         });
 
+        View view = getLayoutInflater().inflate(R.layout.bottomsheet_container,null,false);
+        bottomSheetDialog.setContentView(R.layout.bottomsheet_container);
+        bottomSheetDialog.setContentView(view);
+        edit = (TextView)view.findViewById(R.id.menu_bottom_sheet_edit);
+        delete = (TextView)view.findViewById(R.id.menu_bottom_sheet_delete);
+        delete.setVisibility(View.GONE);
 
     }
 
@@ -187,6 +216,37 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @OnClick({R.id.switch_one_setting, R.id.switch_one_button, R.id.switch_two_setting, R.id.switch_two_button, R.id.switch_three_setting, R.id.switch_three_button, R.id.switch_four_setting, R.id.switch_four_button})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.switch_one_setting:
+                handlesetting(switchOneTextLabel);
+                break;
+            case R.id.switch_one_button:
+                handleswitchOneButtonClick();
+                break;
+            case R.id.switch_two_setting:
+                handlesetting(switchTwoTextLable);
+                break;
+            case R.id.switch_two_button:
+                handleswitchTwoButtonClick();
+                break;
+            case R.id.switch_three_setting:
+                handlesetting(switchThreeTextLable);
+                break;
+            case R.id.switch_three_button:
+                handleswitchThreeButtonClick();
+                break;
+            case R.id.switch_four_setting:
+                handlesetting(switchFourTextLable);
+                break;
+            case R.id.switch_four_button:
+                handleswitchFourButtonClick();
+                break;
+        }
     }
 
 
@@ -224,14 +284,34 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
             switchFour.removeEventListener(switchFourButtonValueEventListener);
         }
 
+        if (switchOneTextLableValueEventListener != null){
+            switchOneTextLabel.removeEventListener(switchOneTextLableValueEventListener);
+        }
+
+        if (switchTwoTextLableValueEventListener != null){
+            switchOneTextLabel.removeEventListener(switchTwoTextLableValueEventListener);
+        }
+
+        if (switchThreeTextLableValueEventListener != null){
+            switchOneTextLabel.removeEventListener(switchThreeTextLableValueEventListener);
+        }
+
+        if (switchFourTextLableValueEventListener != null){
+            switchOneTextLabel.removeEventListener(switchFourTextLableValueEventListener);
+        }
+
 
     } //unSubscribe
 
     private void SubscribeEven(){
+        switchOneSetting.setEnabled(true);
+        switchTwoSetting.setEnabled(true);
+        switchThreeSetting.setEnabled(true);
+        switchFourSetting.setEnabled(true);
         SubscribeAckStateChange();
         SubscribeStatusChange();
+        SubscribeTextLable();
     } //SubscribeEven
-
 
     private void initOfflineStatus(){
 
@@ -246,6 +326,10 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
             status[i].setText("OFF");
         }
 
+        switchOneSetting.setEnabled(false);
+        switchTwoSetting.setEnabled(false);
+        switchThreeSetting.setEnabled(false);
+        switchFourSetting.setEnabled(false);
 
     } //init offline status
 
@@ -349,7 +433,6 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
     } // listent for ack chang
 
-
     private void SubscribeStatusChange() {
 
         switchOneButtonValueEventListener = new ValueEventListener() {
@@ -440,32 +523,113 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
     } // listen for status change
 
-    @OnClick({R.id.switch_one_setting, R.id.switch_one_button, R.id.switch_two_setting, R.id.switch_two_button, R.id.switch_three_setting, R.id.switch_three_button, R.id.switch_four_setting, R.id.switch_four_button})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.switch_one_setting:
-                break;
-            case R.id.switch_one_button:
-                handleswitchOneButtonClick();
-                break;
-            case R.id.switch_two_setting:
-                break;
-            case R.id.switch_two_button:
-                handleswitchTwoButtonClick();
-                break;
-            case R.id.switch_three_setting:
-                break;
-            case R.id.switch_three_button:
-                handleswitchThreeButtonClick();
-                break;
-            case R.id.switch_four_setting:
-                break;
-            case R.id.switch_four_button:
-                handleswitchFourButtonClick();
-                break;
-        }
-    }
+    private void SubscribeTextLable(){
 
+        switchOneTextLableValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String switchlable = dataSnapshot.getValue(String.class);
+                switchOneName.setText(switchlable);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        switchTwoTextLableValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String switchlable = dataSnapshot.getValue(String.class);
+                switchTwoName.setText(switchlable);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        switchThreeTextLableValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String switchlable = dataSnapshot.getValue(String.class);
+                switchThreeName.setText(switchlable);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        switchFourTextLableValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String switchlable = dataSnapshot.getValue(String.class);
+                switchFourName.setText(switchlable);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        switchOneTextLabel.addValueEventListener(switchOneTextLableValueEventListener);
+        switchTwoTextLable.addValueEventListener(switchTwoTextLableValueEventListener);
+        switchThreeTextLable.addValueEventListener(switchThreeTextLableValueEventListener);
+        switchFourTextLable.addValueEventListener(switchFourTextLableValueEventListener);
+
+    } //init controller
+
+
+    /* ------------- seeting click ---------------*/
+
+    private void handlesetting(final DatabaseReference ref){
+
+        bottomSheetDialog.show();
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bottomSheetDialog.hide();
+
+                View dialoginputview = getLayoutInflater().inflate(R.layout.layout_change_smatrdevice_name,null,false);
+                final EditText switch_name = (EditText)dialoginputview.findViewById(R.id.input_smart_device_name);
+                new android.support.v7.app.AlertDialog.Builder(SmartSwitchControllerActivity.this)
+                        .setTitle("Change Switch Name")
+                        .setView(dialoginputview)
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("RENAME", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (switch_name.getText().toString().trim().length() <=0 ){
+                                    Snackbar.make(switchControllerContainer,"You Switch Name is Empty",Snackbar.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                ref.setValue(switch_name.getText().toString().trim());
+                                ref.keepSynced(true);
+
+                            }
+
+                        }).show();
+
+            }
+
+        });
+
+    } //handle setting click
 
     /*--------- handle button click--------------*/
     private void handleswitchFourButtonClick() {

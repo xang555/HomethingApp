@@ -29,5 +29,6 @@
     <string name="no_device_item">No Device</string>
     <string name="dialog_delete">Delete</string>
     <string name="dialog_edit">Edit</string>
+    <string name="setting_time_dialog">Setting Time</string>
 
 </resources>

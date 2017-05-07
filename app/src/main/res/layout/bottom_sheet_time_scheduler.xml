@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="#ffffff"
@@ -13,14 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:drawablePadding="@dimen/activity_horizontal_margin"
-        android:drawableLeft="@drawable/calendar"
-        android:gravity="center_vertical"
-        android:focusable="true"
         android:clickable="true"
+        android:drawableLeft="@drawable/calendar"
+        android:drawablePadding="@dimen/activity_horizontal_margin"
+        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:padding="@dimen/activity_horizontal_margin"
-        android:text="@string/dialog_delete" />
+        android:text=""
+        tools:text="@string/setting_time_dialog" />
 
 
 </LinearLayout>

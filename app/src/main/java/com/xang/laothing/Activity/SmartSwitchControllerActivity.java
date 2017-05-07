@@ -304,10 +304,10 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     } //unSubscribe
 
     private void SubscribeEven(){
-        switchOneSetting.setEnabled(true);
-        switchTwoSetting.setEnabled(true);
-        switchThreeSetting.setEnabled(true);
-        switchFourSetting.setEnabled(true);
+        switchOneSetting.setVisibility(View.VISIBLE);
+        switchTwoSetting.setVisibility(View.VISIBLE);
+        switchThreeSetting.setVisibility(View.VISIBLE);
+        switchFourSetting.setVisibility(View.VISIBLE);
         SubscribeAckStateChange();
         SubscribeStatusChange();
         SubscribeTextLable();
@@ -326,10 +326,10 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
             status[i].setText("OFF");
         }
 
-        switchOneSetting.setEnabled(false);
-        switchTwoSetting.setEnabled(false);
-        switchThreeSetting.setEnabled(false);
-        switchFourSetting.setEnabled(false);
+        switchOneSetting.setVisibility(View.INVISIBLE);
+        switchTwoSetting.setVisibility(View.INVISIBLE);
+        switchThreeSetting.setVisibility(View.INVISIBLE);
+        switchFourSetting.setVisibility(View.INVISIBLE);
 
     } //init offline status
 

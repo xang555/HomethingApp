@@ -63,6 +63,7 @@ public class SmartSwitchActivity extends AppCompatActivity {
     @OnClick(R.id.scheduler_button)
     public void onSchedulerClicked() {
         Intent intent = new Intent(SmartSwitchActivity.this, SmartSwitchSchedulerActivity.class);
+        intent.putExtra(MainActivity.SDID_KEY_EXTRA,sdid);
         startActivity(intent);
     }
 

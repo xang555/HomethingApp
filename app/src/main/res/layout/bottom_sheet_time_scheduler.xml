@@ -21,8 +21,8 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:padding="@dimen/activity_horizontal_margin"
-        android:text=""
-        tools:text="@string/setting_time_dialog" />
+        android:text="@string/setting_time_dialog"
+         />
 
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.xang.laothing.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +26,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SmartSwitchSchedulerActivity extends AppCompatActivity {
+public class SmartSwitchSchedulerActivity extends AppCompatActivity implements SettingTimeFragmentDialog.settingTimeListener {
 
     @BindView(R.id.center_title)
     TextView centerTitle;
@@ -58,11 +59,13 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity {
 
     private String sdid;
 
-    DatabaseReference[] lamp_ref = {lamp_one,lamp_two,lamp_three,lamp_four};
-    DatabaseReference[] name_ref = {name_one,name_two,name_three,name_four};
-    DatabaseReference[] time_ref = {time_one,time_two,time_three,time_four};
-    DatabaseReference[] switch_ref = {switch_one,switch_two,switch_three,switch_four};
+    private DatabaseReference[] lamp_ref = {lamp_one,lamp_two,lamp_three,lamp_four};
+    private DatabaseReference[] name_ref = {name_one,name_two,name_three,name_four};
+    private DatabaseReference[] time_ref = {time_one,time_two,time_three,time_four};
+    private DatabaseReference[] switch_ref = {switch_one,switch_two,switch_three,switch_four};
 
+    private BottomSheetDialog bottomSheetDialog;
+    private TextView settingTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,11 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity {
 
         setSwitchChangeListener(); //listener for state chnage
 
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_time_scheduler,null,false);
+        settingTime = (TextView)view.findViewById(R.id.menu_bottom_sheet_calendar);
+        bottomSheetDialog = new BottomSheetDialog(SmartSwitchSchedulerActivity.this);
+        bottomSheetDialog.setContentView(view);
+
     }
 
     @Override
@@ -112,16 +120,36 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity {
 
     @OnClick({R.id.switch_one_setting, R.id.switch_two_setting, R.id.switch_three_setting, R.id.switch_four_setting})
     public void onViewClicked(View view) {
+
+         int position = 0;
+
         switch (view.getId()) {
             case R.id.switch_one_setting:
+               position = 0;
                 break;
             case R.id.switch_two_setting:
+                position = 1;
                 break;
             case R.id.switch_three_setting:
+                position = 2;
                 break;
             case R.id.switch_four_setting:
+                position = 3;
                 break;
         }
+
+        bottomSheetDialog.show();
+
+        final int finalPosition = position;
+        settingTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingTimeFragmentDialog settingTimeDialog = SettingTimeFragmentDialog.newInstance(finalPosition);
+                settingTimeDialog.show(getSupportFragmentManager(),"dialog");
+                bottomSheetDialog.hide();
+            }
+        });
+
     }
 
 
@@ -271,6 +299,16 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity {
     } // state change listener
 
 
+    @Override
+    public void onUserSettingTimeCompletted(int hour, int minute, boolean status,int position) {
+
+        lamp_ref[position].setValue(status ? 1 : 0);
+        lamp_ref[position].keepSynced(true);
+        SchedulerTimeFirebaseModel timeFirebaseModel = new SchedulerTimeFirebaseModel(hour,minute);
+        time_ref[position].setValue(timeFirebaseModel);
+        time_ref[position].keepSynced(true);
+
+    }
 
 
 }

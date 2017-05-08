@@ -28,5 +28,8 @@
     <color name="lamp_status_on">#F9A825</color>
     <color name="lamp_status_off">#BDBDBD</color>
 
+    <color name="temp_warning">#ec892d</color>
+    <color name="temp_hot">#f22f21</color>
+    <color name="temp_cloud">#50deed</color>
 
 </resources>

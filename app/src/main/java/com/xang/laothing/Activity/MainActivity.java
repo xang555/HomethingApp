@@ -458,19 +458,21 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             @Override
             public void itemClick(int position) {
 
-                
+                 Intent intent;
                 switch (deviceModels.get(position).getType()){
                     
                     case SMART_SWITCH:
 
-                        Intent intent = new Intent(MainActivity.this,SmartSwitchActivity.class);
+                        intent = new Intent(MainActivity.this,SmartSwitchActivity.class);
                         intent.putExtra(SDID_KEY_EXTRA,deviceModels.get(position).getSdid());
                         startActivity(intent);
 
                         break;
                     
                     case TEMP_AND_HUMI :
-                        
+                         intent = new Intent(MainActivity.this,TempHumiActivity.class);
+                        intent.putExtra(SDID_KEY_EXTRA,deviceModels.get(position).getSdid());
+                        startActivity(intent);
                         break;
                     
                     case GASS_SENSOR :

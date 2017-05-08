@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,7 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kyleduo.switchbutton.SwitchButton;
-import com.xang.laothing.Offline.SmartSwitchOfflineMode;
+import com.xang.laothing.Offline.OfflineModeService;
 import com.xang.laothing.Offline.response.SmatrtSwitchOfflineResponse;
 import com.xang.laothing.R;
 
@@ -705,7 +704,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
     private void handleswitchOffline(final String swn , String cmd, final CircleButton button, final ImageView lamp, final TextView status) {
 
-                SmartSwitchOfflineMode.offlineService().SendCommand(swn,cmd)
+                OfflineModeService.offlineService().SendCommand(swn,cmd)
                 .enqueue(new Callback<SmatrtSwitchOfflineResponse>() {
                     @Override
                     public void onResponse(Call<SmatrtSwitchOfflineResponse> call, Response<SmatrtSwitchOfflineResponse> response) {

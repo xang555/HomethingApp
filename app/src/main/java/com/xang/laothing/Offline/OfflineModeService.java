@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by xang on 04/05/2017.
  */
 
-public class SmartSwitchOfflineMode {
+public class OfflineModeService {
 
 public static Router offlineService(){
 

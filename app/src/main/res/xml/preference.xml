@@ -16,7 +16,7 @@
 
         <Preference android:key="pref_key_persis_smart_alarm"
             android:title="Smart Alarm"
-            android:summary="smart alarm version 1.1"/>
+            android:summary="2 device"/>
 
     </PreferenceCategory>
 

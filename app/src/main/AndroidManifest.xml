@@ -22,6 +22,20 @@
         <meta-data android:name="QUERY_LOG" android:value="true" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.xang.laothing.Database" />
 
+        <service
+            android:name=".Service.FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".Service.FirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
 
         <activity android:name=".Activity.LoginActivity" android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
@@ -43,6 +57,7 @@
          <activity android:name=".Activity.GassSensorActivity"></activity>
          <activity android:name=".Activity.SmartAlarmActivity"></activity>
         <activity android:name=".Activity.SignUpActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
     </application>
 
 </manifest>

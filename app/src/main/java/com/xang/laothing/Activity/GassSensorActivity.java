@@ -1,5 +1,6 @@
 package com.xang.laothing.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,8 @@ public class GassSensorActivity extends AppCompatActivity {
     @BindView(R.id.maintoolbar)
     Toolbar maintoolbar;
 
+    private String sdid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +33,10 @@ public class GassSensorActivity extends AppCompatActivity {
         maintoolbar.setTitle("");
         maintoolbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(maintoolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
 
     }
 
@@ -40,7 +45,7 @@ public class GassSensorActivity extends AppCompatActivity {
         super.onStart();
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.content_gass_setting, GasSettingFragment.newInstance())
+                .replace(R.id.content_gass_setting, GasSettingFragment.newInstance(sdid))
                 .commit();
 
     }

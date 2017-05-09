@@ -476,7 +476,9 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                         break;
                     
                     case GASS_SENSOR :
-                        
+                        intent = new Intent(MainActivity.this,GassSensorActivity.class);
+                        intent.putExtra(SDID_KEY_EXTRA,deviceModels.get(position).getSdid());
+                        startActivity(intent);
                         break;
                     
                     case SMART_ALARM :

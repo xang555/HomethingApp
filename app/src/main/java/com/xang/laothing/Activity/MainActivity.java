@@ -487,7 +487,9 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                         break;
                     
                     case SMART_ALARM :
-                        
+                        intent = new Intent(MainActivity.this,SmartAlarmActivity.class);
+                        intent.putExtra(SDID_KEY_EXTRA,deviceModels.get(position).getSdid());
+                        startActivity(intent);
                         break;
                     
                 }

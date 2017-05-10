@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,12 +42,14 @@ import com.xang.laothing.Api.reponse.EditSmartDeviceResponse;
 import com.xang.laothing.Api.request.AddSmartDeviceRequest;
 import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
 import com.xang.laothing.Api.request.EditSmartDeviceRequest;
+import com.xang.laothing.Database.FcmTable;
 import com.xang.laothing.Database.SmartDeviceTable;
 import com.xang.laothing.Database.SmartSwitchTable;
 import com.xang.laothing.Model.SmartDeviceModel;
 import com.xang.laothing.R;
 import com.xang.laothing.Service.AlertDialogService;
 import com.xang.laothing.Service.Depending;
+import com.xang.laothing.Service.IdentifierService;
 import com.xang.laothing.Service.RandomService;
 import com.xang.laothing.Service.SharePreferentService;
 
@@ -218,6 +222,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
                 SmartDeviceTable.deleteAll(SmartDeviceTable.class); //delete data smart device
                 SmartSwitchTable.deleteAll(SmartSwitchTable.class); // delete data smart switch
+                DeleteNotificationToken(); // delete fcm token
                 SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
                 SharePreferentService.SaveToken(MainActivity.this,""); // delete token
                 SharePreferentService.setIsFirstLoadSmartDevice(MainActivity.this,true);
@@ -749,6 +754,29 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     } //delete smart device successfully
 
+    private void DeleteNotificationToken(){
+
+        Iterator<FcmTable> fcms = FcmTable.findAll(FcmTable.class);
+        while (fcms.hasNext()){
+            FcmTable fcm = fcms.next();
+            database.getReference(fcm.sdid).child("sensor").child("alert").child(IdentifierService.getDeivceId(MainActivity.this)).removeValue()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("DLEET TOKEN","delete token suucessfully");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("DLEET TOKEN","delete token failure");
+                        }
+                    });
+        }
+
+        FcmTable.deleteAll(FcmTable.class); // delete token
+
+    }
 
     /*---------------------- require permission ---------------*/
     @NeedsPermission(Manifest.permission.CAMERA)

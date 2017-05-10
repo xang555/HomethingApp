@@ -23,14 +23,16 @@
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.xang.laothing.Database" />
 
         <service
-            android:name=".Service.FirebaseMessagingService">
+            android:name=".Service.FirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".Service.FirebaseInstanceIDService">
+            android:name=".Service.FirebaseInstanceIDService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>

@@ -125,8 +125,20 @@ public class GassSensorActivity extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        HashMap<String, String> links = (HashMap<String, String>) dataSnapshot.getValue();
-                        smaDeviceCount.setText(links.size() + " device");
+
+                        int device_count = 0;
+
+                        if (dataSnapshot!=null){
+
+                            if (dataSnapshot.getValue() !=null){
+                                HashMap<String, String> links = (HashMap<String, String>) dataSnapshot.getValue();
+                                device_count = links.size();
+                            }
+
+                        }
+
+                        smaDeviceCount.setText(device_count + " device");
+
                     }
 
                     @Override

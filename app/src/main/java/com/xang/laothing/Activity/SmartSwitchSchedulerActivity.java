@@ -1,14 +1,19 @@
 package com.xang.laothing.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -33,39 +38,41 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
     @BindView(R.id.maintoolbar)
     Toolbar maintoolbar;
 
-    @BindViews({R.id.lamp_switch_one,R.id.lamp_switch_two,R.id.lamp_switch_three,R.id.lamp_switch_four})
+    @BindViews({R.id.lamp_switch_one, R.id.lamp_switch_two, R.id.lamp_switch_three, R.id.lamp_switch_four})
     ImageView[] lamp;
 
-    @BindViews({R.id.switch_one_name,R.id.switch_two_name,R.id.switch_three_name,R.id.switch_four_name})
+    @BindViews({R.id.switch_one_name, R.id.switch_two_name, R.id.switch_three_name, R.id.switch_four_name})
     TextView[] switchName;
 
-    @BindViews({R.id.time_label_one,R.id.time_label_two,R.id.time_label_three,R.id.time_label_four})
+    @BindViews({R.id.time_label_one, R.id.time_label_two, R.id.time_label_three, R.id.time_label_four})
     TextView[] timeLabel;
 
-    @BindViews({R.id.switch_one,R.id.switch_two,R.id.switch_three,R.id.switch_four})
+    @BindViews({R.id.switch_one, R.id.switch_two, R.id.switch_three, R.id.switch_four})
     Switch[] switchState;
 
-    @BindViews({R.id.switch_one_setting,R.id.switch_two_setting,R.id.switch_three_setting,R.id.switch_four_setting})
+    @BindViews({R.id.switch_one_setting, R.id.switch_two_setting, R.id.switch_three_setting, R.id.switch_four_setting})
     ImageView[] switchSetting;
-
+    @BindView(R.id.shceduler_container)
+    ConstraintLayout shcedulerContainer;
 
 
     private FirebaseDatabase database;
 
-    private DatabaseReference lamp_one,lamp_two,lamp_three,lamp_four;
-    private DatabaseReference name_one,name_two,name_three,name_four;
-    private DatabaseReference time_one,time_two,time_three,time_four;
-    private DatabaseReference switch_one,switch_two,switch_three,switch_four;
+    private DatabaseReference lamp_one, lamp_two, lamp_three, lamp_four;
+    private DatabaseReference name_one, name_two, name_three, name_four;
+    private DatabaseReference time_one, time_two, time_three, time_four;
+    private DatabaseReference switch_one, switch_two, switch_three, switch_four;
 
     private String sdid;
 
-    private DatabaseReference[] lamp_ref = {lamp_one,lamp_two,lamp_three,lamp_four};
-    private DatabaseReference[] name_ref = {name_one,name_two,name_three,name_four};
-    private DatabaseReference[] time_ref = {time_one,time_two,time_three,time_four};
-    private DatabaseReference[] switch_ref = {switch_one,switch_two,switch_three,switch_four};
+    private DatabaseReference[] lamp_ref = {lamp_one, lamp_two, lamp_three, lamp_four};
+    private DatabaseReference[] name_ref = {name_one, name_two, name_three, name_four};
+    private DatabaseReference[] time_ref = {time_one, time_two, time_three, time_four};
+    private DatabaseReference[] switch_ref = {switch_one, switch_two, switch_three, switch_four};
 
     private BottomSheetDialog bottomSheetDialog;
     private TextView settingTime;
+    private TextView editName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +104,9 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
         setSwitchChangeListener(); //listener for state chnage
 
-        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_time_scheduler,null,false);
-        settingTime = (TextView)view.findViewById(R.id.menu_bottom_sheet_calendar);
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_time_scheduler, null, false);
+        settingTime = (TextView) view.findViewById(R.id.menu_bottom_sheet_calendar);
+        editName = (TextView) view.findViewById(R.id.menu_bottom_sheet_edit_name);
         bottomSheetDialog = new BottomSheetDialog(SmartSwitchSchedulerActivity.this);
         bottomSheetDialog.setContentView(view);
 
@@ -122,11 +130,11 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
     @OnClick({R.id.switch_one_setting, R.id.switch_two_setting, R.id.switch_three_setting, R.id.switch_four_setting})
     public void onViewClicked(View view) {
 
-         int position = 0;
+        int position = 0;
 
         switch (view.getId()) {
             case R.id.switch_one_setting:
-               position = 0;
+                position = 0;
                 break;
             case R.id.switch_two_setting:
                 position = 1;
@@ -146,52 +154,54 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
             @Override
             public void onClick(View v) {
                 SettingTimeFragmentDialog settingTimeDialog = SettingTimeFragmentDialog.newInstance(finalPosition);
-                settingTimeDialog.show(getSupportFragmentManager(),"dialog");
+                settingTimeDialog.show(getSupportFragmentManager(), "dialog");
                 bottomSheetDialog.hide();
             }
         });
+
+        handleEditName(name_ref[position]); // handle change name
 
     }
 
 
     /*------ init database ref ------*/
 
-    private void InitDatabaseRef(String sdid){
+    private void InitDatabaseRef(String sdid) {
 
 
-        for (int i =0 ;i <lamp_ref.length ; i++){
-            lamp_ref[i] =  database.getReference(sdid).child("scheduler").child("L"+(i+1)).child("status");
+        for (int i = 0; i < lamp_ref.length; i++) {
+            lamp_ref[i] = database.getReference(sdid).child("scheduler").child("L" + (i + 1)).child("status");
         }
 
 
-        for (int i = 0 ;i < name_ref.length ; i++){
-            name_ref[i] =database.getReference(sdid).child("name").child("L"+(i+1));
+        for (int i = 0; i < name_ref.length; i++) {
+            name_ref[i] = database.getReference(sdid).child("name").child("L" + (i + 1));
         }
 
 
-        for (int i =0 ;i < time_ref.length ; i++){
-            time_ref[i] = database.getReference(sdid).child("scheduler").child("L"+(i+1)).child("time");
+        for (int i = 0; i < time_ref.length; i++) {
+            time_ref[i] = database.getReference(sdid).child("scheduler").child("L" + (i + 1)).child("time");
         }
 
-        for (int i =0 ;i<switch_ref.length ; i++){
-            switch_ref[i] = database.getReference(sdid).child("scheduler").child("L"+(i+1)).child("state");
+        for (int i = 0; i < switch_ref.length; i++) {
+            switch_ref[i] = database.getReference(sdid).child("scheduler").child("L" + (i + 1)).child("state");
         }
 
     } // database ref
 
-    private void subscribeEven(){
+    private void subscribeEven() {
 
-        for (int i = 0 ; i < lamp_ref.length ; i++){
+        for (int i = 0; i < lamp_ref.length; i++) {
             final int finalI = i;
             lamp_ref[i].addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     int status = dataSnapshot.getValue(Integer.class);
-                    if (status == 1){
-                        lamp[finalI].setColorFilter(ContextCompat.getColor(SmartSwitchSchedulerActivity.this,R.color.lamp_status_on));
-                    }else if (status == 0){
-                        lamp[finalI].setColorFilter(ContextCompat.getColor(SmartSwitchSchedulerActivity.this,R.color.lamp_status_off));
+                    if (status == 1) {
+                        lamp[finalI].setColorFilter(ContextCompat.getColor(SmartSwitchSchedulerActivity.this, R.color.lamp_status_on));
+                    } else if (status == 0) {
+                        lamp[finalI].setColorFilter(ContextCompat.getColor(SmartSwitchSchedulerActivity.this, R.color.lamp_status_off));
                     }
 
                 }
@@ -203,7 +213,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
             });
         } // lamp
 
-        for (int i = 0 ; i < name_ref.length ; i++){
+        for (int i = 0; i < name_ref.length; i++) {
             final int finalI = i;
             name_ref[i].addValueEventListener(new ValueEventListener() {
                 @Override
@@ -223,7 +233,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
         } // name
 
 
-        for (int i =0; i < time_ref.length ; i++){
+        for (int i = 0; i < time_ref.length; i++) {
 
             final int finalI = i;
             time_ref[i].addValueEventListener(new ValueEventListener() {
@@ -233,20 +243,20 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
                     SchedulerTimeFirebaseModel timeFirebaseModel = dataSnapshot.getValue(SchedulerTimeFirebaseModel.class);
                     String hour = "";
 
-                    if (timeFirebaseModel.hour < 10 ){
+                    if (timeFirebaseModel.hour < 10) {
                         hour = "0";
                     }
 
-                    hour+=timeFirebaseModel.hour;
+                    hour += timeFirebaseModel.hour;
 
                     String minute = "";
-                    if (timeFirebaseModel.minute < 10){
+                    if (timeFirebaseModel.minute < 10) {
                         minute = "0";
                     }
 
-                    minute+=timeFirebaseModel.minute;
+                    minute += timeFirebaseModel.minute;
 
-                    timeLabel[finalI].setText(hour+":"+minute);
+                    timeLabel[finalI].setText(hour + ":" + minute);
 
                 }
 
@@ -259,7 +269,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
         } // time
 
 
-        for (int i =0 ;i < switch_ref.length ; i++){
+        for (int i = 0; i < switch_ref.length; i++) {
 
             final int finalI = i;
             switch_ref[i].addValueEventListener(new ValueEventListener() {
@@ -278,12 +288,11 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
         } //switch
 
 
-
     } //subscribe even for this activity
 
-    private void setSwitchChangeListener(){
+    private void setSwitchChangeListener() {
 
-        for (int i = 0 ;i < switchState.length ; i++){
+        for (int i = 0; i < switchState.length; i++) {
 
             final int finalI = i;
             switchState[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -299,13 +308,53 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
     } // state change listener
 
+    private void handleEditName(final DatabaseReference ref) {
+
+        editName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bottomSheetDialog.hide();
+
+                View dialoginputview = getLayoutInflater().inflate(R.layout.layout_change_smatrdevice_name, null, false);
+                final EditText switch_name = (EditText) dialoginputview.findViewById(R.id.input_smart_device_name);
+                new AlertDialog.Builder(SmartSwitchSchedulerActivity.this)
+                        .setTitle("Change Switch Name")
+                        .setView(dialoginputview)
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("RENAME", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (switch_name.getText().toString().trim().length() <= 0) {
+                                    Snackbar.make(shcedulerContainer, "You Switch Name is Empty", Snackbar.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                ref.setValue(switch_name.getText().toString().trim());
+                                ref.keepSynced(true);
+
+                            }
+
+                        }).show();
+
+            }
+
+        });
+
+    } //handle editname click
 
     @Override
-    public void onUserSettingTimeCompletted(int hour, int minute, boolean status,int position) {
+    public void onUserSettingTimeCompletted(int hour, int minute, boolean status, int position) {
 
         lamp_ref[position].setValue(status ? 1 : 0);
         lamp_ref[position].keepSynced(true);
-        SchedulerTimeFirebaseModel timeFirebaseModel = new SchedulerTimeFirebaseModel(hour,minute);
+        SchedulerTimeFirebaseModel timeFirebaseModel = new SchedulerTimeFirebaseModel(hour, minute);
         time_ref[position].setValue(timeFirebaseModel);
         time_ref[position].keepSynced(true);
 

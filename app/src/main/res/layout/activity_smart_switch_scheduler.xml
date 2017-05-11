@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/shceduler_container"
     tools:context="com.xang.laothing.Activity.SmartSwitchSchedulerActivity">
 
     <include layout="@layout/toolbar"
@@ -61,18 +62,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="29dp"
                 android:layout_marginTop="29dp"
                 android:text="Bed room"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:maxLength="15"
+                android:maxLength="10"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_one"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.100000024" />
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintRight_toLeftOf="@+id/time_label_one"
+                android:layout_marginRight="38dp"
+                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_one"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintHorizontal_bias="0.0" />
 
             <TextView
                 android:id="@+id/time_label_one"
@@ -157,18 +161,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="29dp"
                 android:layout_marginTop="29dp"
                 android:text="Bed room"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:maxLength="15"
+                android:maxLength="10"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_two"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.100000024" />
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintRight_toLeftOf="@+id/time_label_two"
+                android:layout_marginRight="40dp"
+                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_two"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintHorizontal_bias="0.0" />
 
             <TextView
                 android:id="@+id/time_label_two"
@@ -253,18 +260,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="29dp"
                 android:layout_marginTop="29dp"
                 android:text="Bed room"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:maxLength="15"
+                android:maxLength="10"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_three"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.100000024" />
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_three"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintRight_toLeftOf="@+id/time_label_three"
+                android:layout_marginRight="8dp"
+                app:layout_constraintHorizontal_bias="0.0" />
 
             <TextView
                 android:id="@+id/time_label_three"
@@ -349,18 +359,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="29dp"
                 android:layout_marginTop="29dp"
                 android:text="Bed room"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:maxLength="15"
+                android:maxLength="10"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_four"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.100000024" />
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintLeft_toRightOf="@+id/lamp_switch_four"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintRight_toLeftOf="@+id/time_label_four"
+                android:layout_marginRight="8dp"
+                app:layout_constraintHorizontal_bias="0.105" />
 
             <TextView
                 android:id="@+id/time_label_four"

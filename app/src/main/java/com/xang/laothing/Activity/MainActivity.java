@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         setupSmartDeviceLists(); //set up lists
 
         if (SharePreferentService.isFirstLoad(MainActivity.this)) {
+            smoothprogressBar.setVisibility(View.VISIBLE);
             LoadSmartDevices();
         } else {
             FillSmartdeviceToLists();
@@ -306,7 +307,6 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     } // add smart device successfully
 
     private void LoadSmartDevices() {
-
 
         ApiService.getRouterServiceApi().getDeviceByUser(SharePreferentService.getToken(MainActivity.this))
                 .enqueue(new Callback<DevicesResponse>() {

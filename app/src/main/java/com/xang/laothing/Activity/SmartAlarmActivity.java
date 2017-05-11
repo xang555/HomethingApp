@@ -121,16 +121,70 @@ public class SmartAlarmActivity extends AppCompatActivity {
 
     private void handleSaveSetting() {
 
+        final DatabaseReference smart_alarm_link_to_gas = database.getReference(sdid).child("link");
+        progressDialog = Depending.showDependingProgressDialog(SmartAlarmActivity.this, "wait...");
+
         if (gass_sdid.trim().length() <= 0) {
-            AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smart Alarm", "Please select sensor device");
+
+            smart_alarm_link_to_gas.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot!=null){
+
+                        String gass_id = dataSnapshot.getValue(String.class);
+                        if (gass_id!=null){
+                            database.getReference(gass_id).child("sensor").child("SmartAlarmlinks").child(sdid).removeValue()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            smart_alarm_link_to_gas.setValue("").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    finish();
+                                                }
+                                            })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            progressDialog.dismiss();
+                                                            AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smart Alarm", e.getMessage() + ", Please try again");
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            progressDialog.dismiss();
+                                            AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smart Alarm", e.getMessage() + ", Please try again");
+                                        }
+                                    });
+
+                        }else {
+                            progressDialog.dismiss();
+                        }
+
+                    }else {
+                        progressDialog.dismiss();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
             return;
+
         }
 
-        progressDialog = Depending.showDependingProgressDialog(SmartAlarmActivity.this, "wait...");
-        DatabaseReference smart_alarm_link_to_ga = database.getReference(sdid).child("link");
         final DatabaseReference gas_link_to_smart_larm = database.getReference(gass_sdid).child("sensor").child("SmartAlarmlinks");
 
-        smart_alarm_link_to_ga.setValue(gass_sdid)
+        smart_alarm_link_to_gas.setValue(gass_sdid)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -147,7 +201,7 @@ public class SmartAlarmActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         progressDialog.dismiss();
-                                        AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smrt Alarm", e.getMessage() + ", Please try again");
+                                        AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smart Alarm", e.getMessage() + ", Please try again");
                                     }
                                 });
 
@@ -157,7 +211,7 @@ public class SmartAlarmActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressDialog.dismiss();
-                        AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smrt Alarm", e.getMessage() + ", Please try again");
+                        AlertDialogService.ShowAlertDialog(SmartAlarmActivity.this, "Smart Alarm", e.getMessage() + ", Please try again");
                     }
                 });
 

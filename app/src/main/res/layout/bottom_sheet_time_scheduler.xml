@@ -16,6 +16,7 @@
         android:layout_gravity="center"
         android:clickable="true"
         android:drawableLeft="@drawable/calendar"
+        android:drawableStart="@drawable/calendar"
         android:drawablePadding="@dimen/activity_horizontal_margin"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -24,5 +25,20 @@
         android:text="@string/setting_time_dialog"
          />
 
+    <TextView
+        android:id="@+id/menu_bottom_sheet_edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:drawableLeft="@android:drawable/ic_menu_edit"
+        android:drawableStart="@android:drawable/ic_menu_edit"
+        android:drawablePadding="@dimen/activity_horizontal_margin"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_edit_name"
+        />
 
 </LinearLayout>

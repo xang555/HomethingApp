@@ -130,10 +130,10 @@ public class SmartAlarmActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    if (dataSnapshot!=null){
+                    if (dataSnapshot != null) {
 
                         String gass_id = dataSnapshot.getValue(String.class);
-                        if (gass_id!=null){
+                        if (gass_id != null) {
                             database.getReference(gass_id).child("sensor").child("SmartAlarmlinks").child(sdid).removeValue()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -161,11 +161,11 @@ public class SmartAlarmActivity extends AppCompatActivity {
                                         }
                                     });
 
-                        }else {
+                        } else {
                             progressDialog.dismiss();
                         }
 
-                    }else {
+                    } else {
                         progressDialog.dismiss();
                     }
 
@@ -276,17 +276,25 @@ public class SmartAlarmActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Snackbar.make(smartAlarmContainer,"Stop Alarm Sucessfully",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(smartAlarmContainer, "Stop Alarm Sucessfully", Snackbar.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Snackbar.make(smartAlarmContainer,"Stop Alarm failure , " + e.getMessage(),Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(smartAlarmContainer, "Stop Alarm failure , " + e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
                 });
 
     } //stop alert button click
+
+
+    @OnClick(R.id.setting_button)
+    public void onSettingClicked() {
+        Intent intent = new Intent(SmartAlarmActivity.this,ConnectWifiActivity.class);
+        startActivity(intent);
+    } //setting button click
+
 
 
 }

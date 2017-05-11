@@ -63,8 +63,8 @@
 
         <at.markushi.ui.CircleButton
             android:id="@+id/stop_alert_button"
-            android:layout_width="179dp"
-            android:layout_height="196dp"
+            android:layout_width="124dp"
+            android:layout_height="120dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/shut_down_icon"
             app:cb_color="@android:color/holo_red_light"
@@ -74,10 +74,54 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/cardView5"
-            app:layout_constraintVertical_bias="0.357"
+            app:layout_constraintVertical_bias="0.087"
             android:layout_marginLeft="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintHorizontal_bias="0.445" />
+            app:layout_constraintHorizontal_bias="0.893" />
+
+        <at.markushi.ui.CircleButton
+            android:id="@+id/setting_button"
+            android:layout_width="124dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/settings"
+            app:cb_color="@color/ksw_md_solid_checked"
+            app:cb_pressedRingWidth="8dip"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginRight="24dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/cardView5"
+            app:layout_constraintVertical_bias="0.087"
+            android:layout_marginLeft="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="0.005" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="67dp"
+            android:layout_marginTop="13dp"
+            android:text="Setting"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setting_button"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="13dp"
+            android:text="Stop Alert"
+            app:layout_constraintHorizontal_bias="0.635"
+            app:layout_constraintLeft_toRightOf="@+id/textView15"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stop_alert_button" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -83,6 +83,7 @@ public class ConnectWifiActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mainToolbarAndProgressbar.setTitle("");
+        mainToolbarAndProgressbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(mainToolbarAndProgressbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -143,6 +143,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
         centerTitle.setText(R.string.smartswitchcontrolleractivity);
         maintoolbar.setTitle("");
+        maintoolbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(maintoolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         bottomSheetDialog = new BottomSheetDialog(SmartSwitchControllerActivity.this);

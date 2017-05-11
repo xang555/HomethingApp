@@ -8,7 +8,7 @@ public class ApiConfig {
 
 
     public static String getbaseUri(){
-        return "http://192.168.43.245:3000/homething/";
+        return "http://103.208.25.28:9999/homething/";
     }
 
 

@@ -73,6 +73,7 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
 
         toolbarAndProgressbarCenterTitle.setText(R.string.setconnection_wifi_to_smartdevice);
         mainToolbarAndProgressbar.setTitle("");
+        mainToolbarAndProgressbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(mainToolbarAndProgressbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

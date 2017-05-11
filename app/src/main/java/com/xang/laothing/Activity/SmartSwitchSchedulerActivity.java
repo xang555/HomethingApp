@@ -75,6 +75,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
         centerTitle.setText(R.string.scheduler);
         maintoolbar.setTitle("");
+        maintoolbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(maintoolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

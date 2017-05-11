@@ -51,6 +51,7 @@ public class TempHumiActivity extends AppCompatActivity {
 
         centerTitle.setText(R.string.temp_and_humi_toolbar_title);
         maintoolbar.setTitle("");
+        maintoolbar.setNavigationIcon(R.drawable.cancel);
         setSupportActionBar(maintoolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

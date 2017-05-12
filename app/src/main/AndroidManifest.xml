@@ -10,55 +10,74 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".app.HomethingApp"
         android:allowBackup="true"
         android:icon="@drawable/lamp"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name=".app.HomethingApp"
         android:theme="@style/AppTheme">
-
-        <meta-data android:name="DATABASE" android:value="homething.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.xang.laothing.Database" />
+        <meta-data
+            android:name="DATABASE"
+            android:value="homething.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.xang.laothing.Database" />
 
         <service
             android:name=".Service.FirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Service.FirebaseInstanceIDService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-
-        <activity android:name=".Activity.LoginActivity" android:windowSoftInputMode="stateAlwaysHidden">
+        <activity
+            android:name=".Activity.BannerActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.MainActivity" />
 
-         <activity android:name=".Activity.MainActivity"></activity>
-        <!-- <activity android:name=".LoginActivity"></activity> -->
+         <activity android:name=".Activity.LoginActivity"  android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
         <activity android:name=".Activity.ScanQrcodeViewer" />
-         <activity android:name=".Activity.SmartSwitchActivity"></activity>
+
+        <activity android:name=".Activity.SmartSwitchActivity" />
+
         <activity android:name=".Activity.SmartSwitchControllerActivity" />
+
         <activity android:name=".Activity.SmartSwitchSchedulerActivity" />
+
         <activity android:name=".Activity.ConnectWifiActivity" />
+
         <activity android:name=".Activity.SettingConnectWifiToSamrtDeviceActivity" />
-         <activity android:name=".Activity.TempHumiActivity"></activity>
-         <activity android:name=".Activity.GassSensorActivity"></activity>
-         <activity android:name=".Activity.SmartAlarmActivity"></activity>
-        <activity android:name=".Activity.SignUpActivity" android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
+        <activity android:name=".Activity.TempHumiActivity" />
+
+        <activity android:name=".Activity.GassSensorActivity" />
+
+        <activity android:name=".Activity.SmartAlarmActivity" />
+
+        <activity
+            android:name=".Activity.SignUpActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
     </application>
 

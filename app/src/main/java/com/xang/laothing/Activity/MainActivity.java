@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.xang.laothing.Adapter.SmartDeviceAdapter;
 import com.xang.laothing.Api.ApiService;
-import com.xang.laothing.Api.Router;
 import com.xang.laothing.Api.reponse.AddSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DeleteSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DevicesResponse;
@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     private TextView edit;
 
     private FirebaseDatabase database;
+    private FirebaseAuth auth;
+
     private List<SmartDeviceModel> deviceModels = new ArrayList<SmartDeviceModel>();
     SmartDeviceAdapter deviceAdapter;
     private ProgressDialog ptrDialog;
@@ -118,6 +120,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         setSupportActionBar(maintoolbar);
 
         database = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
+
         smartdeviceRefreshContainer.setOnRefreshListener(this);
         smartdeviceRefreshContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -227,6 +231,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                 SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
                 SharePreferentService.SaveToken(MainActivity.this,""); // delete token
                 SharePreferentService.setIsFirstLoadSmartDevice(MainActivity.this,true);
+                auth.signOut();
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -752,6 +757,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             int deleteitem = SmartDeviceTable.deleteAll(SmartDeviceTable.class,"sdid = ?",sdid);
             if (deleteitem > 0){
                 FillSmartdeviceToLists();
+                DeleteNotificationTokenById(sdid);
             }
 
     } //delete smart device successfully
@@ -761,24 +767,40 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         Iterator<FcmTable> fcms = FcmTable.findAll(FcmTable.class);
         while (fcms.hasNext()){
             FcmTable fcm = fcms.next();
-            database.getReference(fcm.sdid).child("sensor").child("alert").child(IdentifierService.getDeivceId(MainActivity.this)).removeValue()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("DLEET TOKEN","delete token suucessfully");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("DLEET TOKEN","delete token failure");
-                        }
-                    });
+           deletNotiTokenFromFirebase(fcm.sdid);
+        }
+        FcmTable.deleteAll(FcmTable.class); // delete token
+    } // delete noti token when logout
+
+
+    private void DeleteNotificationTokenById(String sdid){
+
+        List<FcmTable> fcm = FcmTable.find(FcmTable.class,"sdid = ?",sdid);
+        if (!fcm.isEmpty()){
+            deletNotiTokenFromFirebase(fcm.get(0).sdid);
+            fcm.get(0).delete();
         }
 
-        FcmTable.deleteAll(FcmTable.class); // delete token
+    } //delete noti token by id when delete device item
 
-    }
+
+    private void deletNotiTokenFromFirebase(String sdid){
+
+        database.getReference(sdid).child("sensor").child("alert").child(IdentifierService.getDeivceId(MainActivity.this)).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("DLEET TOKEN","delete token suucessfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("DLEET TOKEN","delete token failure");
+                    }
+                });
+
+    } //delete notify token from firebase
 
     /*---------------------- require permission ---------------*/
     @NeedsPermission(Manifest.permission.CAMERA)

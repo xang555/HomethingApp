@@ -30,7 +30,7 @@
     <string name="dialog_delete">Delete</string>
     <string name="dialog_edit">Edit</string>
     <string name="setting_time_dialog">Setting Time</string>
-    
+
     <string name="setting_wifi_error">Can\'t Setting Wifi connection to Smart Device Successfully,please reset smart device and try again</string>
     <string name="setting_wifi_suucess">Setting Wifi connection to Smart Device Successfully, please reset smart device</string>
     <string name="dialog_edit_name">Edit Name</string>

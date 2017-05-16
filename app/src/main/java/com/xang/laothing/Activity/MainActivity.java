@@ -202,10 +202,12 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         switch (id){
             case android.R.id.home :
-
+                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.logout:
                 handleLogout(); //logout fromm app
+                break;
         }
 
 

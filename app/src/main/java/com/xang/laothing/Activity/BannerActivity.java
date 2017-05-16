@@ -45,7 +45,7 @@ public class BannerActivity extends AppCompatActivity {
                     public void run() {
                         CheckAuthentication(); //check authentication
                     }
-            }, 5000);
+            }, 3000);
 
 
     }

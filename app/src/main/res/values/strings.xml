@@ -34,5 +34,8 @@
     <string name="setting_wifi_error">Can\'t Setting Wifi connection to Smart Device Successfully,please reset smart device and try again</string>
     <string name="setting_wifi_suucess">Setting Wifi connection to Smart Device Successfully, please reset smart device</string>
     <string name="dialog_edit_name">Edit Name</string>
+    <string name="dialog_show_device_code">Device code</string>
+
+    <string name="show_smartdevice_security_code">Device code is a important security, which it is allow someone else can use this smart device\n\n</string>
 
 </resources>

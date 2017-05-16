@@ -65,12 +65,6 @@ public class SmartDeviceAdapter extends RecyclerView.Adapter<SmartDeviceAdapter.
             }
         });
 
-        if (smartDevicedatalists.get(position).isActive()){
-            holder.status.setColorFilter(Color.BLUE);
-        }else {
-            holder.status.setColorFilter(Color.RED);
-        }
-
         onUpdatestatusListener.onUpdate(holder,position);
 
     }

@@ -9,10 +9,9 @@ public class SmartDeviceModel {
     private String sdid;
     private String name;
     private int type;
-    private boolean isactive;
+    private String deviceCode;
 
     public SmartDeviceModel(){}
-
 
     public void setSdid(String sdid){
         this.sdid = sdid;
@@ -26,10 +25,11 @@ public class SmartDeviceModel {
         this.type = type;
     }
 
-    public void setIsactive(boolean isactive){
-        this.isactive = isactive;
-    }
 
+
+    public void setDeviceCode(String deviceCode){
+        this.deviceCode = deviceCode;
+    }
 
     public String getSdid(){
         return this.sdid;
@@ -43,11 +43,9 @@ public class SmartDeviceModel {
         return this.type;
     }
 
-    public boolean isActive(){
-        return this.isactive;
+    public String getDeviceCode(){
+        return this.deviceCode;
     }
-
-
 
 
 }

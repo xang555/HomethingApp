@@ -35,5 +35,19 @@
         android:padding="@dimen/activity_horizontal_margin"
         android:text="@string/dialog_edit" />
 
+    <TextView
+        android:id="@+id/menu_bottom_sheet_show_device_code"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_gravity="center"
+        android:drawablePadding="@dimen/activity_horizontal_margin"
+        android:drawableLeft="@drawable/device_code"
+        android:gravity="center_vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_show_device_code" />
+
 
 </LinearLayout>

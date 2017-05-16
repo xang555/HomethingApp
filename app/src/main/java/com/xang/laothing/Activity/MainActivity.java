@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     FrameLayout noDeviceContainer;
     private TextView delete;
     private TextView edit;
+    private TextView device_code;
 
     private FirebaseDatabase database;
     private FirebaseAuth auth;
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         delete = (TextView)view.findViewById(R.id.menu_bottom_sheet_delete);
         edit = (TextView)view.findViewById(R.id.menu_bottom_sheet_edit);
-
+        device_code = (TextView)view.findViewById(R.id.menu_bottom_sheet_show_device_code);
 
     }
 
@@ -489,8 +490,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             SmartDeviceModel device = new SmartDeviceModel();
             device.setSdid(deviceTable.sdid);
             device.setName(deviceTable.name);
-            device.setIsactive(false);
             device.setType(deviceTable.type);
+            device.setDeviceCode(deviceTable.sharecode);
 
             deviceModels.add(device);
 
@@ -563,11 +564,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         bottomSheetDialog.hide();
-
                         handleDeleteItemClick(position);
-
                     }
                 });
 
@@ -575,15 +573,19 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                     @Override
                     public void onClick(View v) {
                         bottomSheetDialog.hide();
-
                         handleEditItem(position);
-
                     }
                 });
 
+                device_code.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.hide();
+                        handleShowDeviceCode(position);
+                    }
+                });
 
                 bottomSheetDialog.show(); // show bottom sheet
-
 
             }
         });
@@ -658,6 +660,10 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     } // setup lists
 
+    private void handleShowDeviceCode(int position) {
+        AlertDialogService.ShowAlertDialog(MainActivity.this,deviceModels.get(position).getName(),
+                getResources().getString(R.string.show_smartdevice_security_code)+"Device Code : "+deviceModels.get(position).getDeviceCode());
+    } //show device code
 
     private void handleEditItem(final int position) {
 

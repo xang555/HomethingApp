@@ -36,6 +36,7 @@
                 android:layout_height="12dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="4dp"
+                android:tint="@color/myCustomColor"
                 android:layout_marginTop="8dp"
                 app:layout_constraintHorizontal_bias="0.913"
                 app:layout_constraintLeft_toRightOf="@+id/item_setting"

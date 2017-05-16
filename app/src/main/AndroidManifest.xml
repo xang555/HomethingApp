@@ -54,31 +54,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.MainActivity" />
-
-         <activity android:name=".Activity.LoginActivity"  android:windowSoftInputMode="stateAlwaysHidden"></activity>
-
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".Activity.ScanQrcodeViewer" />
-
         <activity android:name=".Activity.SmartSwitchActivity" />
-
         <activity android:name=".Activity.SmartSwitchControllerActivity" />
-
         <activity android:name=".Activity.SmartSwitchSchedulerActivity" />
-
         <activity android:name=".Activity.ConnectWifiActivity" />
-
         <activity android:name=".Activity.SettingConnectWifiToSamrtDeviceActivity" />
-
         <activity android:name=".Activity.TempHumiActivity" />
-
         <activity android:name=".Activity.GassSensorActivity" />
-
         <activity android:name=".Activity.SmartAlarmActivity" />
-
         <activity
             android:name=".Activity.SignUpActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
+        <activity android:name=".Activity.ProfileActivity"></activity>
     </application>
 
 </manifest>

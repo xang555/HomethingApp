@@ -53,7 +53,6 @@ public class BannerActivity extends AppCompatActivity {
 
     private void CheckAuthentication(){
 
-
       if (auth.getCurrentUser() !=null){
           //have login
           String uid = auth.getCurrentUser().getUid();

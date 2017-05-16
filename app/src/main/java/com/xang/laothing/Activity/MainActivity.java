@@ -17,10 +17,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -245,15 +249,64 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     private void HandelScanQrcodeComplete(Intent data) {
 
         String qrcodeValue = data.getStringExtra(ScanQrcodeViewer.QR_CODE_VALUE);
-        ptrDialog = Depending.showDependingProgressDialog(MainActivity.this,"Searching Device ...");
-        addSmartDevice(qrcodeValue); // add smart device
+        handleScanSmartDevice(qrcodeValue);
 
     } // handle scan QR code complete
 
+    private void handleScanSmartDevice(String qrcodeValue) {
+        ShowInputShareCodeDialog(qrcodeValue);
+    } // handle scan qrcode suucessfully
 
-    private void addSmartDevice(String sdid){
+    private void ShowInputShareCodeDialog(final String sdid) {
 
-        AddSmartDeviceRequest request = new AddSmartDeviceRequest(sdid);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.add_smart_device_dialog, null, false);
+        final EditText sharecode_passwd = (EditText)view.findViewById(R.id.sharecode_password);
+        CheckBox checkshowpassword= (CheckBox)view.findViewById(R.id.check_show_password);
+
+        checkshowpassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+                    sharecode_passwd.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }else{
+                    sharecode_passwd.setInputType(129);
+                }
+            }
+        });
+
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Add Smart device")
+                .setView(view)
+                .setCancelable(false)
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String sharecode = sharecode_passwd.getText().toString().trim();
+                        if (sharecode.length() <=0 ){
+                            Snackbar.make(container,"Please, Enter Device code",Snackbar.LENGTH_LONG).show();
+                            return;
+                        }
+                        ptrDialog = Depending.showDependingProgressDialog(MainActivity.this,"Searching Device ...");
+                        addSmartDevice(sdid,sharecode);
+                        dialog.dismiss();
+                    }
+
+                }).show();
+
+    } // show dialog input password
+
+
+    private void addSmartDevice(String sdid,String sharecode){
+
+        AddSmartDeviceRequest request = new AddSmartDeviceRequest(sdid,sharecode);
         ApiService.getRouterServiceApi().AddSmartDevice(SharePreferentService.getToken(MainActivity.this),request)
                 .enqueue(new Callback<AddSmartDeviceResponse>() {
                     @Override
@@ -269,10 +322,10 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                                 handleAddSmartDeviceSuccessfully(smartDevice);
                             }else if (smartDevice.err == 404){
                                 handleAddSmartDeviceFailure("No Device in Homething system , Please try again ");
-                            }else if (smartDevice.err == 403){
-                                handleAddSmartDeviceFailure("This smart device is registered, with other user, or don't have device in homething system");
+                            }else if (smartDevice.err == 400){
+                                handleAddSmartDeviceFailure("This smart device is already registered");
                             }else {
-                                handleAddSmartDeviceFailure("Something Wrong , Please try again");
+                                handleAddSmartDeviceFailure("No device or Device code invalid, please try again");
                             }
 
                         }else {
@@ -304,7 +357,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         AddSmartDeviceResponse.Device sd = smartDevice.device;
 
-            SmartDeviceTable deviceTable = new SmartDeviceTable(sd.sdid, sd.regis, sd.type, sd.name);
+            SmartDeviceTable deviceTable = new SmartDeviceTable(sd.sdid, sd.sharecode, sd.type, sd.name);
             deviceTable.save();
 
             FillSmartdeviceToLists(); //fill data smart device to lists
@@ -413,7 +466,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             }
 
             if (!ishave) {
-                SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.regis, device.type, device.nicname);
+                SmartDeviceTable deviceTable = new SmartDeviceTable(device.sdid, device.sharecode, device.type, device.nicname);
                 deviceTable.save();
             }
 
@@ -611,6 +664,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         View dialoginputview = getLayoutInflater().inflate(R.layout.layout_change_smatrdevice_name,null,false);
         final EditText device_name = (EditText)dialoginputview.findViewById(R.id.input_smart_device_name);
+        device_name.setText(deviceModels.get(position).getName());
 
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Change Device Name")

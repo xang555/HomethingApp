@@ -23,10 +23,10 @@ public class AddSmartDeviceResponse {
         public String sdid;
         @SerializedName("type")
         public int type;
-        @SerializedName("regis")
-        public boolean regis;
         @SerializedName("nicname")
         public String name;
+        @SerializedName("sharecode")
+        public String sharecode;
 
     }
 

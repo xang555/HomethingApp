@@ -10,9 +10,12 @@ public class AddSmartDeviceRequest {
 
     @SerializedName("sdid")
     public String sdid;
+    @SerializedName("sharecode")
+    public String sharecode;
 
-    public AddSmartDeviceRequest(String sdid){
+    public AddSmartDeviceRequest(String sdid, String sharecode){
         this.sdid = sdid;
+        this.sharecode = sharecode;
     }
 
 }

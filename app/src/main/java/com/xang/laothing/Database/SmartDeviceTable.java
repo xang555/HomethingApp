@@ -12,15 +12,15 @@ public class SmartDeviceTable extends SugarRecord{
 
     @Unique
     public String sdid;
-    public boolean regis;
+    public String sharecode;
     public int type;
     public String name;
 
     public SmartDeviceTable(){}
 
-    public SmartDeviceTable(String sdid, boolean regis , int type, String name){
+    public SmartDeviceTable(String sdid, String sharecode , int type, String name){
         this.sdid = sdid;
-        this.regis = regis;
+        this.sharecode = sharecode;
         this.type = type;
         this.name = name;
     }

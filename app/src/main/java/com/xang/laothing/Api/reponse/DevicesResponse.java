@@ -25,8 +25,8 @@ public class DevicesResponse {
         public int type;
         @SerializedName("nicname")
         public String nicname;
-        @SerializedName("regis")
-        public boolean regis;
+        @SerializedName("sharecode")
+        public String sharecode;
 
     }
 

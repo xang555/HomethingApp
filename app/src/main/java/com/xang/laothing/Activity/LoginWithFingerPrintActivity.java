@@ -1,12 +1,15 @@
 package com.xang.laothing.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.github.ajalt.reprint.core.AuthenticationFailureReason;
 import com.github.ajalt.reprint.core.AuthenticationListener;
@@ -19,7 +22,6 @@ import com.xang.laothing.Api.ApiService;
 import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
 import com.xang.laothing.Api.request.LoginRequest;
 import com.xang.laothing.R;
-import com.xang.laothing.Service.AlertDialogService;
 import com.xang.laothing.Service.SharePreferentService;
 
 import butterknife.BindView;
@@ -34,6 +36,8 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     ImageView imgCanFinger;
     @BindView(R.id.loading_progress_scan_finger)
     ProgressBar loadingProgressScanFinger;
+    @BindView(R.id.message_label)
+    TextView messageLabel;
 
     private FirebaseAuth auth;
 
@@ -51,6 +55,18 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        AuthenticationUsingFingerprint();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Reprint.cancelAuthentication();
+    }
+
+
+    private void AuthenticationUsingFingerprint(){
 
         Reprint.authenticate(new AuthenticationListener() {
             @Override
@@ -60,37 +76,28 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(AuthenticationFailureReason failureReason, boolean fatal, CharSequence errorMessage, int moduleTag, int errorCode) {
-                    handleScanfingerPrintFailure(failureReason,errorMessage);
+                handleScanfingerPrintFailure(failureReason, errorMessage);
             }
         });
-
 
     }
 
     private void handleScanfingerPrintFailure(AuthenticationFailureReason failureReason, CharSequence errorMessage) {
-
-
-
-
+        imgCanFinger.setImageResource(R.drawable.info_filure);
+        messageLabel.setText(errorMessage);
     } //scan fingerprint failure
 
     private void handleScanfingerPrintScuessfully() {
 
+        messageLabel.setText("Finger Print is Corrected");
         imgCanFinger.setVisibility(View.GONE);
         loadingProgressScanFinger.setVisibility(View.VISIBLE);
         String email = SharePreferentService.getUserEmail(LoginWithFingerPrintActivity.this);
         String passwd = SharePreferentService.getFingerPrint(LoginWithFingerPrintActivity.this);
 
-        Login(email,passwd); // login
+        Login(email, passwd); // login
 
     } // scan fingerprint sucessfully
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-
 
     private void Login(String email, String passwd) {
 
@@ -104,7 +111,6 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        loadingProgressScanFinger.setVisibility(View.GONE);
                         handleLoginFailuer(e.getMessage());
                     }
                 });
@@ -139,7 +145,6 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<SignUpAndLoginResponse> call, Throwable t) {
-                        loadingProgressScanFinger.setVisibility(View.GONE);
                         handleLoginFailuer(t.getMessage());
                     }
                 });
@@ -147,12 +152,30 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     } //login with api
 
     private void handleLoginFailuer(String message) {
-        AlertDialogService.ShowAlertDialog(LoginWithFingerPrintActivity.this, "Login Failure", message);
-    } // login failure
+        loadingProgressScanFinger.setVisibility(View.GONE);
+        imgCanFinger.setImageResource(R.drawable.fingerprint_max_larg);
+        imgCanFinger.setVisibility(View.VISIBLE);
+        messageLabel.setText(message);
 
-    private void handleLoginSuccess(SignUpAndLoginResponse loginResponse) {
-        SharePreferentService.SaveToken(LoginWithFingerPrintActivity.this, loginResponse.token);
-        gotoMainActivity();
+        AuthenticationUsingFingerprint(); // re authentication with fingerprint
+
+    } // login failure 3
+
+    private void handleLoginSuccess(final SignUpAndLoginResponse loginResponse) {
+
+        imgCanFinger.setVisibility(View.VISIBLE);
+        messageLabel.setTextColor(Color.WHITE);
+        messageLabel.setText("Login Successfully");
+        imgCanFinger.setImageResource(R.drawable.success);
+
+       new Handler().postDelayed(new Runnable() {
+           @Override
+           public void run() {
+               SharePreferentService.SaveToken(LoginWithFingerPrintActivity.this, loginResponse.token);
+               gotoMainActivity();
+           }
+       },1000);
+
     } //login successfully
 
 

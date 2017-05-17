@@ -166,7 +166,15 @@ public class ProfileActivity extends AppCompatActivity {
         logoutAppService.Logout(new LogoutAppService.onLogoutListener() {
             @Override
             public void Logouted() {
-                Intent intent = new Intent(ProfileActivity.this,LoginActivity.class);
+
+                 Intent intent = null;
+
+                if (SharePreferentService.getFingerPrint(ProfileActivity.this).trim().length() > 0){
+                    intent = new Intent(ProfileActivity.this,LoginWithFingerPrintActivity.class);
+                }else {
+                    intent = new Intent(ProfileActivity.this,LoginActivity.class);
+                }
+
                 startActivity(intent);
                 setResult(RESULT_OK);
                 finish();

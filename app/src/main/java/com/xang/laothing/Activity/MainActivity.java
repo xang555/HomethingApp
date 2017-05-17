@@ -227,7 +227,13 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
             @Override
             public void Logouted() {
 
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                  Intent intent = null;
+                if (SharePreferentService.getFingerPrint(MainActivity.this).trim().length() > 0 ){
+                    intent = new Intent(MainActivity.this,LoginWithFingerPrintActivity.class);
+                }else {
+                    intent = new Intent(MainActivity.this,LoginActivity.class);
+                }
+
                 startActivity(intent);
                 finish();
 

@@ -45,9 +45,7 @@ public class BannerActivity extends AppCompatActivity {
                     public void run() {
                         CheckAuthentication(); //check authentication
                     }
-            }, 3000);
-
-
+            }, 2000);
     }
 
 
@@ -87,9 +85,17 @@ public class BannerActivity extends AppCompatActivity {
 
 
     private void RedirectoLoginActivity(){
-        Intent intent = new Intent(BannerActivity.this,LoginActivity.class);
+
+         Intent intent = null;
+        if (SharePreferentService.getFingerPrint(BannerActivity.this).trim().length() > 0 ){
+             intent = new Intent(BannerActivity.this,LoginWithFingerPrintActivity.class);
+        }else {
+            intent = new Intent(BannerActivity.this,LoginActivity.class);
+        }
+
         startActivity(intent);
         finish();
+
     } //go to login
 
     private void RedirectToMainActivity(){

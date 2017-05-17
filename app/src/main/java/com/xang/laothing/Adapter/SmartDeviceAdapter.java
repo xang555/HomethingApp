@@ -54,14 +54,35 @@ public class SmartDeviceAdapter extends RecyclerView.Adapter<SmartDeviceAdapter.
     }
 
     @Override
-    public void onBindViewHolder(viewholder holder, final int position) {
+    public void onBindViewHolder(final viewholder holder, int position) {
+
+        int image = 0;
+
+        switch (smartDevicedatalists.get(position).getType()){
+
+            case 0:
+                image = R.drawable.smart_switch;
+                break;
+            case 1 :
+                image = R.drawable.temp_and_humi;
+                break;
+            case 2 :
+                image = R.drawable.gass_sensor;
+                break;
+            case 3 :
+                image = R.drawable.smart_alarm;
+                break;
+
+        }
+
+        holder.cover.setImageResource(image);
 
         holder.label.setText(smartDevicedatalists.get(position).getName());
 
         holder.setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSettingClickListener.onClick(position);
+                onSettingClickListener.onClick(holder.getAdapterPosition());
             }
         });
 
@@ -78,12 +99,12 @@ public class SmartDeviceAdapter extends RecyclerView.Adapter<SmartDeviceAdapter.
 
     public  class viewholder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-       public ImageView setting;
-        public ImageView status;
-        public ImageView cover;
-        public TextView label;
+         ImageView setting;
+         public ImageView status;
+         ImageView cover;
+         TextView label;
 
-        public viewholder(View itemView) {
+         viewholder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             setting = (ImageView)itemView.findViewById(R.id.item_setting);

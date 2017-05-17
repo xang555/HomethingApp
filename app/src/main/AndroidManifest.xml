@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
 
     <application
         android:name=".app.HomethingApp"
@@ -69,7 +71,11 @@
         <activity
             android:name=".Activity.SignUpActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".Activity.ProfileActivity"></activity>
+        <activity android:name=".Activity.ProfileActivity" />
+        <activity
+            android:name=".Activity.FingerPrintSettingActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".Activity.LoginWithFingerPrintActivity"></activity>
     </application>
 
 </manifest>

@@ -37,5 +37,9 @@
     <string name="dialog_show_device_code">Device code</string>
 
     <string name="show_smartdevice_security_code">Device code is a important security, which it is allow someone else can use this smart device\n\n</string>
+    <string name="fingerprint_label">you can use fingerprint to login</string>
+    <string name="fingerprint_enable_label">Please Enable user Verifying with fingerprint</string>
+    <string name="fingerprint_check_box_enanel">Enabel fingerprint to login</string>
+    <string name="login_with_fingerprint_label">Place finger to access Homething</string>
 
 </resources>

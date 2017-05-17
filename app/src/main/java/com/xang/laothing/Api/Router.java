@@ -4,6 +4,7 @@ import com.xang.laothing.Api.reponse.AddSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DeleteSmartDeviceResponse;
 import com.xang.laothing.Api.reponse.DevicesResponse;
 import com.xang.laothing.Api.reponse.EditSmartDeviceResponse;
+import com.xang.laothing.Api.reponse.ProfileResponse;
 import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
 import com.xang.laothing.Api.request.AddSmartDeviceRequest;
 import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
@@ -42,5 +43,8 @@ public interface Router {
 
     @POST("user/device/update")
     Call<EditSmartDeviceResponse> EditSmartDevice(@Header("Authorization") String token, @Body EditSmartDeviceRequest request);
+
+    @GET("user/profile")
+    Call<ProfileResponse> getprofile(@Header("Authorization") String token);
 
 }

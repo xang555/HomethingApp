@@ -49,11 +49,13 @@ import com.xang.laothing.Api.request.EditSmartDeviceRequest;
 import com.xang.laothing.Database.FcmTable;
 import com.xang.laothing.Database.SmartDeviceTable;
 import com.xang.laothing.Database.SmartSwitchTable;
+import com.xang.laothing.Database.userTabel;
 import com.xang.laothing.Model.SmartDeviceModel;
 import com.xang.laothing.R;
 import com.xang.laothing.Service.AlertDialogService;
 import com.xang.laothing.Service.Depending;
 import com.xang.laothing.Service.IdentifierService;
+import com.xang.laothing.Service.LogoutAppService;
 import com.xang.laothing.Service.RandomService;
 import com.xang.laothing.Service.SharePreferentService;
 
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     private static final int GASS_SENSOR = 2;
     private static final int SMART_ALARM = 3;
     public static final String SDID_KEY_EXTRA = "sdid";
+    private static final int REQ_PROFILE = 301;
 
     @BindView(R.id.maintoolbar)
     Toolbar maintoolbar;
@@ -172,6 +175,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
         if (requestCode == REQURE_SCAN_QRCODE && resultCode == RESULT_OK) {
             HandelScanQrcodeComplete(data);
+        }else if (requestCode == REQ_PROFILE && resultCode == RESULT_OK){
+            finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
     } // on activity result
@@ -203,7 +208,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         switch (id){
             case android.R.id.home :
                 Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQ_PROFILE);
                 break;
             case R.id.logout:
                 handleLogout(); //logout fromm app
@@ -217,34 +222,17 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     private void handleLogout() {
 
-
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Logout")
-                .setMessage("Logout from homething ?")
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        LogoutAppService logoutAppService = new LogoutAppService(database,auth,MainActivity.this);
+        logoutAppService.Logout(new LogoutAppService.onLogoutListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void Logouted() {
 
-                dialog.dismiss();
-
-                SmartDeviceTable.deleteAll(SmartDeviceTable.class); //delete data smart device
-                SmartSwitchTable.deleteAll(SmartSwitchTable.class); // delete data smart switch
-                DeleteNotificationToken(); // delete fcm token
-                SharePreferentService.setFirstLoad(MainActivity.this,true); // set first load
-                SharePreferentService.SaveToken(MainActivity.this,""); // delete token
-                SharePreferentService.setIsFirstLoadSmartDevice(MainActivity.this,true);
-                auth.signOut();
                 Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
                 finish();
 
             }
-        }).show();
+        });
 
 
     } // when logout
@@ -824,16 +812,6 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     } //delete smart device successfully
 
-    private void DeleteNotificationToken(){
-
-        Iterator<FcmTable> fcms = FcmTable.findAll(FcmTable.class);
-        while (fcms.hasNext()){
-            FcmTable fcm = fcms.next();
-           deletNotiTokenFromFirebase(fcm.sdid);
-        }
-        FcmTable.deleteAll(FcmTable.class); // delete token
-    } // delete noti token when logout
-
 
     private void DeleteNotificationTokenById(String sdid){
 
@@ -844,7 +822,6 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         }
 
     } //delete noti token by id when delete device item
-
 
     private void deletNotiTokenFromFirebase(String sdid){
 

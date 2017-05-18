@@ -132,8 +132,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     DatabaseReference switchFourTextLable;
 
     private BottomSheetDialog bottomSheetDialog;
-    private TextView delete;
-    private TextView edit;
+    private TextView delete,edit,deviceCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,9 +191,14 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         View view = getLayoutInflater().inflate(R.layout.bottomsheet_container,null,false);
         bottomSheetDialog.setContentView(R.layout.bottomsheet_container);
         bottomSheetDialog.setContentView(view);
+
         edit = (TextView)view.findViewById(R.id.menu_bottom_sheet_edit);
         delete = (TextView)view.findViewById(R.id.menu_bottom_sheet_delete);
+        deviceCode = (TextView)view.findViewById(R.id.menu_bottom_sheet_show_device_code);
+
         delete.setVisibility(View.GONE);
+        deviceCode.setVisibility(View.GONE);
+
 
     }
 
@@ -600,6 +604,7 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
                 View dialoginputview = getLayoutInflater().inflate(R.layout.layout_change_smatrdevice_name,null,false);
                 final EditText switch_name = (EditText)dialoginputview.findViewById(R.id.input_smart_device_name);
+
                 new android.support.v7.app.AlertDialog.Builder(SmartSwitchControllerActivity.this)
                         .setTitle("Change Switch Name")
                         .setView(dialoginputview)

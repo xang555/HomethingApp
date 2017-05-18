@@ -6,10 +6,8 @@ package com.xang.laothing.Api;
 
 public class ApiConfig {
 
-
     public static String getbaseUri(){
-        return "http://103.208.25.28:9999/homething/";
+        return "https://homethingapi.xangnam.com/homething/";
     }
-
 
 }

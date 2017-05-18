@@ -38,16 +38,30 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     ProgressBar loadingProgressScanFinger;
     @BindView(R.id.message_label)
     TextView messageLabel;
+    @BindView(R.id.messgae_show_login_with_email)
+    TextView messgaeShowLoginWithEmail;
 
     private FirebaseAuth auth;
+    private Handler mhandle;
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            imgCanFinger.setImageResource(R.drawable.fingerprint_max_larg);
+            messageLabel.setText("Scan your fingerprint");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_with_finger_print);
         ButterKnife.bind(this);
+
         auth = FirebaseAuth.getInstance();
         Reprint.initialize(LoginWithFingerPrintActivity.this);
+        mhandle = new Handler();
+
 
     }
 
@@ -66,16 +80,18 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     }
 
 
-    private void AuthenticationUsingFingerprint(){
+    private void AuthenticationUsingFingerprint() {
 
         Reprint.authenticate(new AuthenticationListener() {
             @Override
             public void onSuccess(int moduleTag) {
+                mhandle.removeCallbacks(runnable);
                 handleScanfingerPrintScuessfully();
             }
 
             @Override
             public void onFailure(AuthenticationFailureReason failureReason, boolean fatal, CharSequence errorMessage, int moduleTag, int errorCode) {
+                mhandle.removeCallbacks(runnable);
                 handleScanfingerPrintFailure(failureReason, errorMessage);
             }
         });
@@ -83,13 +99,19 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     }
 
     private void handleScanfingerPrintFailure(AuthenticationFailureReason failureReason, CharSequence errorMessage) {
+
         imgCanFinger.setImageResource(R.drawable.info_filure);
         messageLabel.setText(errorMessage);
+        if (failureReason != AuthenticationFailureReason.LOCKED_OUT){
+            mhandle.postDelayed(runnable,2000);
+        }
+
     } //scan fingerprint failure
 
     private void handleScanfingerPrintScuessfully() {
 
-        messageLabel.setText("Finger Print is Corrected");
+        messageLabel.setText("sign in ...");
+        messgaeShowLoginWithEmail.setVisibility(View.GONE);
         imgCanFinger.setVisibility(View.GONE);
         loadingProgressScanFinger.setVisibility(View.VISIBLE);
         String email = SharePreferentService.getUserEmail(LoginWithFingerPrintActivity.this);
@@ -126,8 +148,6 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<SignUpAndLoginResponse> call, Response<SignUpAndLoginResponse> response) {
 
-                        loadingProgressScanFinger.setVisibility(View.GONE);
-
                         if (response != null && response.isSuccessful()) {
 
                             SignUpAndLoginResponse loginresponse = response.body();
@@ -152,6 +172,7 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     } //login with api
 
     private void handleLoginFailuer(String message) {
+
         loadingProgressScanFinger.setVisibility(View.GONE);
         imgCanFinger.setImageResource(R.drawable.fingerprint_max_larg);
         imgCanFinger.setVisibility(View.VISIBLE);
@@ -163,18 +184,19 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
 
     private void handleLoginSuccess(final SignUpAndLoginResponse loginResponse) {
 
+        loadingProgressScanFinger.setVisibility(View.GONE);
         imgCanFinger.setVisibility(View.VISIBLE);
         messageLabel.setTextColor(Color.WHITE);
         messageLabel.setText("Login Successfully");
         imgCanFinger.setImageResource(R.drawable.success);
 
-       new Handler().postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               SharePreferentService.SaveToken(LoginWithFingerPrintActivity.this, loginResponse.token);
-               gotoMainActivity();
-           }
-       },1000);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SharePreferentService.SaveToken(LoginWithFingerPrintActivity.this, loginResponse.token);
+                gotoMainActivity();
+            }
+        }, 1000);
 
     } //login successfully
 

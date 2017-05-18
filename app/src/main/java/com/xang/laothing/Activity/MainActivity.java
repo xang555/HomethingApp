@@ -48,8 +48,6 @@ import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
 import com.xang.laothing.Api.request.EditSmartDeviceRequest;
 import com.xang.laothing.Database.FcmTable;
 import com.xang.laothing.Database.SmartDeviceTable;
-import com.xang.laothing.Database.SmartSwitchTable;
-import com.xang.laothing.Database.userTabel;
 import com.xang.laothing.Model.SmartDeviceModel;
 import com.xang.laothing.R;
 import com.xang.laothing.Service.AlertDialogService;
@@ -634,7 +632,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                                                 });
 
                                             }
-                                        }, 60000); // delay 1 mn
+                                        }, 30000); // delay 1 mn
 
 
                                     }

@@ -47,8 +47,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         android.support.v4.app.NotificationCompat.Builder notification = new NotificationCompat.Builder(FirebaseMessagingService.this)
                 .setTicker(msg.get(NOTIFY_TITLE))
-                .setSmallIcon(R.drawable.cancel)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.calendar))
+                .setSmallIcon(R.drawable.home_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.gass_sensor))
                 .setContentTitle(msg.get(CONTENT_TITLE))
                 .setContentText(msg.get(CONTENT_TEXT))
                 .setPriority(Notification.PRIORITY_MAX)

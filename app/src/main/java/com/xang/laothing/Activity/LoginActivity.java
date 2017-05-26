@@ -216,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
     } //login with api
 
     private void handleLoginFailuer(String message) {
+        auth.signOut();
         AlertDialogService.ShowAlertDialog(LoginActivity.this, "Login Failure", message);
     } // login failure
 

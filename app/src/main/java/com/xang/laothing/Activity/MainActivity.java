@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     SmartDeviceAdapter deviceAdapter;
     private ProgressDialog ptrDialog;
     private BottomSheetDialog bottomSheetDialog;
-
+    private Call<DevicesResponse> call;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +218,18 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (call!=null){
+            if (call.isExecuted()){
+                call.cancel();
+                call = null;
+            }
+        }
+
+    }
 
     private void handleLogout() {
 
@@ -361,8 +374,9 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     private void LoadSmartDevices() {
 
-        ApiService.getRouterServiceApi().getDeviceByUser(SharePreferentService.getToken(MainActivity.this))
-                .enqueue(new Callback<DevicesResponse>() {
+           call =  ApiService.getRouterServiceApi().getDeviceByUser(SharePreferentService.getToken(MainActivity.this));
+
+           call.enqueue(new Callback<DevicesResponse>() {
                     @Override
                     public void onResponse(Call<DevicesResponse> call, Response<DevicesResponse> response) {
 
@@ -407,7 +421,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
             smoothprogressBar.setVisibility(View.INVISIBLE);
 
-            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+             dialog = new AlertDialog.Builder(MainActivity.this)
                     .setTitle("Load devices Failure")
                     .setMessage(message + " , do you want try again ?")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {

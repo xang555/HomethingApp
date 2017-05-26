@@ -177,7 +177,7 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
         imgCanFinger.setImageResource(R.drawable.fingerprint_max_larg);
         imgCanFinger.setVisibility(View.VISIBLE);
         messageLabel.setText(message);
-
+        auth.signOut();
         AuthenticationUsingFingerprint(); // re authentication with fingerprint
 
     } // login failure 3

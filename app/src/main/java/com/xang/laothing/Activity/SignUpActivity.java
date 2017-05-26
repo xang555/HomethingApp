@@ -191,9 +191,8 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void handleSignUpFailure(String messg) {
+        auth.signOut();
         AlertDialogService.ShowAlertDialog(SignUpActivity.this,"Sign Up Failure",messg);
     } //handel sign up error
-
-
 
 }

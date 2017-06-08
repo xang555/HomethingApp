@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -26,27 +27,38 @@ import retrofit2.Response;
 
 public class BannerActivity extends AppCompatActivity {
 
+    private static final long POST_DELAY_MILLIS = 3000;
     @BindView(R.id.banner_img)
     ImageView bannerImg;
 
     private FirebaseAuth auth;
+    private Handler mdHandler = new Handler();
+    private Runnable mrunnable = new Runnable() {
+        @Override
+        public void run() {
+            CheckAuthentication(); //check authentication
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_banner);
-        ButterKnife.bind(this);
-
         auth = FirebaseAuth.getInstance();
-
-            new Handler()
-                .postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        CheckAuthentication(); //check authentication
-                    }
-            }, 2000);
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mdHandler.postDelayed(mrunnable,POST_DELAY_MILLIS);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mdHandler.removeCallbacks(mrunnable);
+    }
+
 
 
     private void CheckAuthentication(){

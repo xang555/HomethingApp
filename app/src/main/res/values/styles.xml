@@ -20,4 +20,8 @@
         <item name="spb_colors">@array/progress_color</item>
     </style>
 
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splashscreen</item>
+    </style>
+
 </resources>

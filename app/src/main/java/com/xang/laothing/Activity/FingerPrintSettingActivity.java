@@ -1,6 +1,7 @@
 package com.xang.laothing.Activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,7 @@ import com.xang.laothing.Service.SharePreferentService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class FingerPrintSettingActivity extends AppCompatActivity {
 
@@ -74,6 +76,10 @@ public class FingerPrintSettingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onStart() {

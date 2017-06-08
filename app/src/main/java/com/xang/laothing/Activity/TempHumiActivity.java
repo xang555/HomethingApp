@@ -1,5 +1,6 @@
 package com.xang.laothing.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import az.plainpie.PieView;
 import az.plainpie.animation.PieAngleAnimation;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class TempHumiActivity extends AppCompatActivity {
 
@@ -72,6 +74,12 @@ public class TempHumiActivity extends AppCompatActivity {
 
         subscribeFirebaseDataSensor(); // listen sensor change
 
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

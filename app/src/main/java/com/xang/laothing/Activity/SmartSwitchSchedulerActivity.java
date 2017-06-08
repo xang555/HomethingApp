@@ -1,5 +1,6 @@
 package com.xang.laothing.Activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SmartSwitchSchedulerActivity extends AppCompatActivity implements SettingTimeFragmentDialog.settingTimeListener {
 
@@ -97,6 +99,11 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onStart() {

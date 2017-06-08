@@ -51,6 +51,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @RuntimePermissions
 public class ConnectWifiActivity extends AppCompatActivity {
@@ -90,6 +91,11 @@ public class ConnectWifiActivity extends AppCompatActivity {
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

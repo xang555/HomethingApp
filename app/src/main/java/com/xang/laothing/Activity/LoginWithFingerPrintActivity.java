@@ -1,5 +1,6 @@
 package com.xang.laothing.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class LoginWithFingerPrintActivity extends AppCompatActivity {
 
@@ -65,6 +67,10 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onResume() {

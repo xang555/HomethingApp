@@ -2,6 +2,7 @@ package com.xang.laothing.Activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -74,6 +75,7 @@ import permissions.dispatcher.RuntimePermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener{
@@ -146,6 +148,11 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onStart() {

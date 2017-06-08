@@ -1,6 +1,7 @@
 package com.xang.laothing.Activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -37,6 +38,7 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SmartSwitchControllerActivity extends AppCompatActivity {
 
@@ -169,6 +171,12 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
 
         SubscribeEven(); // online event
 
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

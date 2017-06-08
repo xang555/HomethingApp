@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Home Thing</string>
+    <string name="app_name">HomeThing</string>
     <string name="user_profile">Profile</string>
     <string name="permission_camera_rationale">Need Camera Promission for continue</string>
     <string name="button_allow">OK</string>

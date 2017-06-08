@@ -14,7 +14,7 @@
     <application
         android:name=".app.HomethingApp"
         android:allowBackup="true"
-        android:icon="@drawable/lamp"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -75,7 +75,8 @@
         <activity
             android:name=".Activity.FingerPrintSettingActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".Activity.LoginWithFingerPrintActivity"></activity>
+        <activity android:name=".Activity.LoginWithFingerPrintActivity" />
+        <activity android:name=".Activity.AboutActivity"></activity>
     </application>
 
 </manifest>

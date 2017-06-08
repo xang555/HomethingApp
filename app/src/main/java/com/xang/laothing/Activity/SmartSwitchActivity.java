@@ -1,5 +1,6 @@
 package com.xang.laothing.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import com.xang.laothing.Service.SharePreferentService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SmartSwitchActivity extends AppCompatActivity {
 
@@ -43,6 +45,10 @@ public class SmartSwitchActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

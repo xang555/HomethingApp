@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="148dp"
-        android:layout_height="136dp"
+        android:layout_width="137dp"
+        android:layout_height="127dp"
         app:srcCompat="@drawable/banner_about"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
@@ -32,7 +32,7 @@
         android:textSize="30sp"
         android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/background_dark"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView4"
@@ -47,7 +47,6 @@
         android:layout_marginTop="8dp"
         android:text="ພັດທະນາໂດຍ"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView21" />
@@ -73,7 +72,6 @@
         android:layout_marginTop="8dp"
         android:text="ສະໜັບສະໜູນໂດຍ"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView23" />
@@ -99,7 +97,6 @@
         android:layout_marginTop="9dp"
         android:text="ສະຖານທີ່ພັດທະນາ"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -125,7 +122,6 @@
         android:layout_marginRight="8dp"
         android:autoLink="web"
         android:text="www.laothing.com"
-        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.502"

@@ -1,5 +1,6 @@
 package com.xang.laothing.Service;
 
+import java.util.Calendar;
 import java.util.Random;
 
 /**
@@ -11,10 +12,12 @@ public class RandomService {
     public static int getRandomNumber(){
 
         Random random =new Random();
-        int higth = 99;
-        int low = 10;
-
-        return (random.nextInt(higth - low) + low);
+        Calendar calendar = Calendar.getInstance();
+        int second = calendar.get(Calendar.SECOND);
+        int higth = 1000;
+        int low = 100;
+        int randomnumber = (random.nextInt(higth - low) + low) - second;
+        return (randomnumber);
     }
 
 

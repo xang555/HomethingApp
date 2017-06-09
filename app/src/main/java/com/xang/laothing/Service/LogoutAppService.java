@@ -45,7 +45,6 @@ public class LogoutAppService {
     public void Logout(final onLogoutListener listener){
 
         new AlertDialog.Builder(context)
-                .setTitle("Logout")
                 .setMessage("Logout from homething ?")
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override

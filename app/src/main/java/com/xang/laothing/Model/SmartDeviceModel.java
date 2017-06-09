@@ -1,9 +1,12 @@
 package com.xang.laothing.Model;
 
+import org.parceler.Parcel;
+
 /**
  * Created by xang on 03/05/2017.
  */
 
+@Parcel
 public class SmartDeviceModel {
 
     private String sdid;

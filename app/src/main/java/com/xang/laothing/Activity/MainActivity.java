@@ -47,6 +47,7 @@ import com.xang.laothing.Api.reponse.EditSmartDeviceResponse;
 import com.xang.laothing.Api.request.AddSmartDeviceRequest;
 import com.xang.laothing.Api.request.DeleteSmartDeviceRequest;
 import com.xang.laothing.Api.request.EditSmartDeviceRequest;
+import com.xang.laothing.AppState.SmartDeviceDataLists;
 import com.xang.laothing.Database.FcmTable;
 import com.xang.laothing.Database.SmartDeviceTable;
 import com.xang.laothing.Model.SmartDeviceModel;
@@ -66,6 +67,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import icepick.State;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -78,7 +80,7 @@ import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @RuntimePermissions
-public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener{
+public class MainActivity extends BaseActivity  implements SwipeRefreshLayout.OnRefreshListener{
 
 
     private static final int REQURE_SCAN_QRCODE = 500;
@@ -103,19 +105,21 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
     SwipeRefreshLayout smartdeviceRefreshContainer;
     @BindView(R.id.no_device_container)
     FrameLayout noDeviceContainer;
-    private TextView delete;
-    private TextView edit;
-    private TextView device_code;
 
-    private FirebaseDatabase database;
-    private FirebaseAuth auth;
+     protected TextView delete;
+     protected TextView edit;
+     protected TextView device_code;
 
-    private List<SmartDeviceModel> deviceModels = new ArrayList<SmartDeviceModel>();
-    SmartDeviceAdapter deviceAdapter;
-    private ProgressDialog ptrDialog;
-    private BottomSheetDialog bottomSheetDialog;
-    private Call<DevicesResponse> call;
-    private AlertDialog dialog;
+     protected FirebaseDatabase database;
+     protected FirebaseAuth auth;
+
+    @State(SmartDeviceDataLists.class)
+    protected List<SmartDeviceModel> deviceModels = new ArrayList<SmartDeviceModel>();
+    protected SmartDeviceAdapter deviceAdapter;
+    protected ProgressDialog ptrDialog;
+    protected BottomSheetDialog bottomSheetDialog;
+    protected Call<DevicesResponse> call;
+    protected AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,14 +141,17 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        setupSmartDeviceLists(); //set up lists
+        setupSmartDeviceLists(); //set up lists smart devices
 
-        if (SharePreferentService.isFirstLoad(MainActivity.this)) {
-            smoothprogressBar.setVisibility(View.VISIBLE);
-            LoadSmartDevices();
-        } else {
-            FillSmartdeviceToLists();
+        if (savedInstanceState == null){
+            if (SharePreferentService.isFirstLoad(MainActivity.this)) {
+                smoothprogressBar.setVisibility(View.VISIBLE);
+                LoadSmartDevices();
+            } else {
+                FillSmartdeviceToLists();
+            }
         }
+
 
     }
 
@@ -201,9 +208,7 @@ public class MainActivity extends AppCompatActivity  implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
-
     LoadSmartDevices(); // load smart device again
-
     } // on refresh
 
     @Override

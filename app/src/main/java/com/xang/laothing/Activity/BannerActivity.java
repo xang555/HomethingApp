@@ -28,8 +28,6 @@ import retrofit2.Response;
 public class BannerActivity extends AppCompatActivity {
 
     private static final long POST_DELAY_MILLIS = 3000;
-    @BindView(R.id.banner_img)
-    ImageView bannerImg;
 
     private FirebaseAuth auth;
     private Handler mdHandler = new Handler();

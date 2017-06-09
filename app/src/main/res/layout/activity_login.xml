@@ -23,9 +23,9 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="63dp"
-                android:layout_height="56dp"
-                app:srcCompat="@drawable/common_google_signin_btn_icon_dark"
+                android:layout_width="91dp"
+                android:layout_height="74dp"
+                app:srcCompat="@drawable/banner"
                 android:layout_marginRight="8dp"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginLeft="8dp"
@@ -33,7 +33,10 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                app:layout_constraintHorizontal_bias="0.502"
+                tools:layout_editor_absoluteY="22dp"
+                tools:layout_editor_absoluteX="112dp" />
 
             <TextView
                 android:id="@+id/wellcome"
@@ -46,7 +49,7 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="serif"
                 android:lineSpacingExtra="14sp"
-                android:text="Home Thing"
+                android:text="welcome Home"
                 android:textAlignment="center"
                 android:textSize="24sp"
                 android:typeface="normal"

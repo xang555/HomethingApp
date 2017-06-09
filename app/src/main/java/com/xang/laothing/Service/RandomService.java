@@ -16,7 +16,7 @@ public class RandomService {
         int second = calendar.get(Calendar.SECOND);
         int higth = 1000;
         int low = 100;
-        int randomnumber = (random.nextInt(higth - low) + low) - second;
+        int randomnumber = (int) ((random.nextInt(higth - low) + low) - second) / 10;
         return (randomnumber);
     }
 

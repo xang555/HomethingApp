@@ -92,12 +92,18 @@ public class ProfileActivity extends AppCompatActivity {
                 handle_setting_fingerprint();
                 break;
             case R.id.abount_button:
+                handelAboutActivity();
                 break;
             case R.id.logout_button:
                 handleLogout();
                 break;
         }
     }
+
+    private void handelAboutActivity() {
+        Intent intent = new Intent(ProfileActivity.this,AboutActivity.class);
+        startActivity(intent);
+    } //handel about activity
 
     private void LoadProfile() {
 

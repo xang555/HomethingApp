@@ -22,9 +22,10 @@ import az.plainpie.PieView;
 import az.plainpie.animation.PieAngleAnimation;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.State;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class TempHumiActivity extends AppCompatActivity {
+public class TempHumiActivity extends BaseActivity {
 
     @BindView(R.id.center_title)
     TextView centerTitle;
@@ -40,7 +41,7 @@ public class TempHumiActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference temp_ref, humi_ref, time_ref;
-    private String sdid;
+    @State protected String sdid;
     PieAngleAnimation animation;
     PieAngleAnimation humi_animation;
 
@@ -57,8 +58,10 @@ public class TempHumiActivity extends AppCompatActivity {
         setSupportActionBar(maintoolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
-        sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        if (savedInstanceState ==null){
+            Intent intent = getIntent();
+            sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        }
 
         database = FirebaseDatabase.getInstance();
 

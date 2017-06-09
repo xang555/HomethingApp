@@ -32,6 +32,7 @@ public class SettingTimeFragmentDialog extends DialogFragment {
     private int hour;
     private int mn;
     private int position;
+    private boolean datetimepickerischange = false;
 
 
     public interface settingTimeListener {
@@ -81,6 +82,7 @@ public class SettingTimeFragmentDialog extends DialogFragment {
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                     hour = hourOfDay;
                     mn = minute;
+                datetimepickerischange = true;
             }
         });
 
@@ -103,9 +105,13 @@ public class SettingTimeFragmentDialog extends DialogFragment {
                 }else {
                     status = false;
                 }
+
+                if (!datetimepickerischange){
+                    hour = timePicker.getHour();
+                    mn = timePicker.getMinute();
+                }
                 timeListener.onUserSettingTimeCompletted(hour,mn,status,position);
                 dismiss();
-
             }
         });
 

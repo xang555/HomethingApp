@@ -1,5 +1,8 @@
 package com.xang.laothing.Model;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class WifiScanModel {
 
     private String ssid ;

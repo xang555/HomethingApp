@@ -15,16 +15,17 @@ import com.xang.laothing.Service.SharePreferentService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.State;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SmartSwitchActivity extends AppCompatActivity {
+public class SmartSwitchActivity extends BaseActivity {
 
     @BindView(R.id.maintoolbar)
     Toolbar maintoolbar;
     @BindView(R.id.center_title)
     TextView centerTitle;
 
-    private String sdid ;
+    @State protected String sdid ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,10 @@ public class SmartSwitchActivity extends AppCompatActivity {
         setSupportActionBar(maintoolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
-        sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        if (savedInstanceState ==null){
+            Intent intent = getIntent();
+            sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        }
 
         InitSmartSwitchDatabase(); //init databse
 

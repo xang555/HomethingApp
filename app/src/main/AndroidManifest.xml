@@ -60,6 +60,7 @@
         <activity android:name=".Activity.MainActivity" />
         <activity
             android:name=".Activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".Activity.ScanQrcodeViewer" />
         <activity android:name=".Activity.SmartSwitchActivity" />
@@ -72,13 +73,15 @@
         <activity android:name=".Activity.SmartAlarmActivity" />
         <activity
             android:name=".Activity.SignUpActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".Activity.ProfileActivity" />
         <activity
             android:name=".Activity.FingerPrintSettingActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".Activity.LoginWithFingerPrintActivity" />
+        <activity android:name=".Activity.LoginWithFingerPrintActivity" android:screenOrientation="portrait"/>
         <activity android:name=".Activity.AboutActivity"></activity>
+
     </application>
 
 </manifest>

@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xang.laothing.Adapter.WifiListsConnectionAdapter;
+import com.xang.laothing.AppState.ScanWifiResultState;
 import com.xang.laothing.Model.WifiScanModel;
 import com.xang.laothing.R;
 
@@ -45,6 +46,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.State;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -54,7 +56,7 @@ import permissions.dispatcher.RuntimePermissions;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @RuntimePermissions
-public class ConnectWifiActivity extends AppCompatActivity {
+public class ConnectWifiActivity extends BaseActivity {
 
     @BindView(R.id.progressBar2)
     ProgressBar progressBar2;
@@ -67,7 +69,8 @@ public class ConnectWifiActivity extends AppCompatActivity {
 
     private WifiManager wifiManager;
     private BroadcastReceiver receiver;
-    private List<WifiScanModel> scanwifiResult = new ArrayList<>();
+    @State(ScanWifiResultState.class)
+    protected List<WifiScanModel> scanwifiResult = new ArrayList<>();
     private WifiListsConnectionAdapter connectionListsAdapter;
 
     private String desiredMacAddress = "bssid";
@@ -90,6 +93,10 @@ public class ConnectWifiActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+
+        if (savedInstanceState !=null){
+            SetupScanLits();
+        }
 
     }
 

@@ -35,12 +35,13 @@ import at.markushi.ui.CircleButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.State;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SmartSwitchControllerActivity extends AppCompatActivity {
+public class SmartSwitchControllerActivity extends BaseActivity {
 
     @BindView(R.id.center_title)
     TextView centerTitle;
@@ -109,8 +110,9 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
     private ValueEventListener switchThreeTextLableValueEventListener;
     private ValueEventListener switchFourTextLableValueEventListener;
 
-    private boolean settingmode = true; // true is online / false offline
-    private String sdid;
+
+    @State protected boolean settingmode = true; // true is online / false offline
+    @State protected String sdid;
 
     boolean switchOne_button_is_active = false;
     boolean switchTwo_button_is_active = false;
@@ -149,8 +151,10 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         bottomSheetDialog = new BottomSheetDialog(SmartSwitchControllerActivity.this);
 
-        Intent intent = getIntent();
-        sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        if (savedInstanceState == null){
+            Intent intent = getIntent();
+            sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        }
 
         database = FirebaseDatabase.getInstance();
 
@@ -169,7 +173,16 @@ public class SmartSwitchControllerActivity extends AppCompatActivity {
         switchThreeTextLable = database.getReference(sdid).child("name").child("L3");
         switchFourTextLable = database.getReference(sdid).child("name").child("L4");
 
-        SubscribeEven(); // online event
+        if (savedInstanceState !=null){
+            if (!settingmode){
+                initOfflineStatus();
+            }else {
+                SubscribeEven(); // online event
+            }
+        }else {
+            SubscribeEven(); // online event
+        }
+
 
     }
 

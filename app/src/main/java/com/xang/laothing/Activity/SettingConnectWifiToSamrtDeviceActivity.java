@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.xang.laothing.Adapter.WifiListsConnectionAdapter;
+import com.xang.laothing.AppState.ScanWifiResultState;
 import com.xang.laothing.Model.WifiScanModel;
 import com.xang.laothing.Offline.OfflineModeService;
 import com.xang.laothing.Offline.response.WifiSettingResponse;
@@ -42,12 +43,13 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.State;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
+public class SettingConnectWifiToSamrtDeviceActivity extends BaseActivity {
 
 
     @BindView(R.id.toolbar_and_progressbar_center_title)
@@ -61,7 +63,8 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
 
     private WifiManager wifiManager;
     private BroadcastReceiver receiver;
-    private List<WifiScanModel> scanwifiResult = new ArrayList<>();
+    @State(ScanWifiResultState.class)
+    protected List<WifiScanModel> scanwifiResult = new ArrayList<>();
     private WifiListsConnectionAdapter connectionListsAdapter;
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -79,6 +82,10 @@ public class SettingConnectWifiToSamrtDeviceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+
+        if (savedInstanceState !=null){
+            SetupScanLits();
+        }
 
     }
 

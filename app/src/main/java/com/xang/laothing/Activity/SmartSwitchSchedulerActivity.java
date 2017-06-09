@@ -31,9 +31,10 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import icepick.State;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class SmartSwitchSchedulerActivity extends AppCompatActivity implements SettingTimeFragmentDialog.settingTimeListener {
+public class SmartSwitchSchedulerActivity extends BaseActivity implements SettingTimeFragmentDialog.settingTimeListener {
 
     @BindView(R.id.center_title)
     TextView centerTitle;
@@ -65,7 +66,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
     private DatabaseReference time_one, time_two, time_three, time_four;
     private DatabaseReference switch_one, switch_two, switch_three, switch_four;
 
-    private String sdid;
+    @State protected String sdid;
 
     private DatabaseReference[] lamp_ref = {lamp_one, lamp_two, lamp_three, lamp_four};
     private DatabaseReference[] name_ref = {name_one, name_two, name_three, name_four};
@@ -91,8 +92,10 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
         database = FirebaseDatabase.getInstance();
 
-        Intent intent = getIntent();
-        sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        if (savedInstanceState == null){
+            Intent intent = getIntent();
+            sdid = intent.getStringExtra(MainActivity.SDID_KEY_EXTRA);
+        }
 
         InitDatabaseRef(sdid); // init database ref
         subscribeEven(); // subscribe for change
@@ -135,7 +138,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
 
     @OnClick({R.id.switch_one_setting, R.id.switch_two_setting, R.id.switch_three_setting, R.id.switch_four_setting})
-    public void onViewClicked(View view) {
+    public void onsSwitchSettingClicked(View view) {
 
         int position = 0;
 
@@ -168,7 +171,7 @@ public class SmartSwitchSchedulerActivity extends AppCompatActivity implements S
 
         handleEditName(name_ref[position]); // handle change name
 
-    }
+    } // setting click
 
 
     /*------ init database ref ------*/

@@ -49,7 +49,7 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            imgCanFinger.setImageResource(R.drawable.fingerprint_max_larg);
+            imgCanFinger.setImageDrawable(getDrawable(R.drawable.ic_fingerprint_larg));
             messageLabel.setText("Scan your fingerprint");
         }
     };
@@ -180,7 +180,7 @@ public class LoginWithFingerPrintActivity extends AppCompatActivity {
     private void handleLoginFailuer(String message) {
 
         loadingProgressScanFinger.setVisibility(View.GONE);
-        imgCanFinger.setImageResource(R.drawable.fingerprint_max_larg);
+        imgCanFinger.setImageDrawable(getDrawable(R.drawable.ic_fingerprint_larg));
         imgCanFinger.setVisibility(View.VISIBLE);
         messageLabel.setText(message);
         auth.signOut();

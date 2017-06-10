@@ -5,4 +5,8 @@
     <dimen name="activity_left_padding">16dp</dimen>
     <dimen name="activity_right_padding">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="lamp_size_width">60dp</dimen>
+    <dimen name="lamp_size_higth">60dp</dimen>
+
 </resources>

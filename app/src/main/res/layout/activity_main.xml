@@ -69,7 +69,7 @@
         app:backgroundTint="@color/colorButton"
         app:elevation="5dp"
         app:fabSize="normal"
-        app:srcCompat="@drawable/qr_code_scan" />
+        app:srcCompat="@drawable/ic_qr_code" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -101,8 +101,8 @@
 
             <ImageView
                 android:id="@+id/lamp_switch_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/lamp_size_width"
+                android:layout_height="@dimen/lamp_size_higth"
                 app:srcCompat="@drawable/lamp"
                 android:layout_marginLeft="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -199,8 +199,8 @@
 
             <ImageView
                 android:id="@+id/lamp_switch_two"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/lamp_size_width"
+                android:layout_height="@dimen/lamp_size_higth"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -297,8 +297,8 @@
 
             <ImageView
                 android:id="@+id/lamp_switch_three"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/lamp_size_width"
+                android:layout_height="@dimen/lamp_size_higth"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -398,8 +398,8 @@
 
             <ImageView
                 android:id="@+id/lamp_switch_four"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/lamp_size_width"
+                android:layout_height="@dimen/lamp_size_higth"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"

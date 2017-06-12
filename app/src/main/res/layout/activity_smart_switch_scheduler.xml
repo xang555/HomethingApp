@@ -72,11 +72,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:layout_constraintRight_toLeftOf="@+id/time_label_one"
-                android:layout_marginRight="38dp"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_one"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintHorizontal_bias="0.0" />
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/time_label_one"
@@ -89,9 +86,10 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.514"
+                app:layout_constraintLeft_toRightOf="@+id/switch_one_name"
+                android:layout_marginLeft="8dp"
                 app:layout_constraintRight_toLeftOf="@+id/switch_one"
-                android:layout_marginRight="31dp" />
+                android:layout_marginRight="8dp" />
 
             <Switch
                 android:id="@+id/switch_one"
@@ -171,11 +169,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                app:layout_constraintRight_toLeftOf="@+id/time_label_two"
-                android:layout_marginRight="40dp"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_two"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintHorizontal_bias="0.0" />
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/time_label_two"
@@ -188,9 +183,11 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.514"
+                app:layout_constraintVertical_bias="0.468"
+                app:layout_constraintLeft_toRightOf="@+id/switch_two_name"
+                android:layout_marginLeft="8dp"
                 app:layout_constraintRight_toLeftOf="@+id/switch_two"
-                android:layout_marginRight="31dp" />
+                android:layout_marginRight="8dp" />
 
             <Switch
                 android:id="@+id/switch_two"
@@ -271,10 +268,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_three"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintRight_toLeftOf="@+id/time_label_three"
-                android:layout_marginRight="8dp"
-                app:layout_constraintHorizontal_bias="0.0" />
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/time_label_three"
@@ -288,8 +282,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.514"
+                app:layout_constraintLeft_toRightOf="@+id/switch_three_name"
+                android:layout_marginLeft="8dp"
                 app:layout_constraintRight_toLeftOf="@+id/switch_three"
-                android:layout_marginRight="31dp" />
+                android:layout_marginRight="8dp" />
 
             <Switch
                 android:id="@+id/switch_three"
@@ -370,10 +366,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@+id/lamp_switch_four"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintRight_toLeftOf="@+id/time_label_four"
-                android:layout_marginRight="8dp"
-                app:layout_constraintHorizontal_bias="0.105" />
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/time_label_four"
@@ -386,9 +379,10 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.514"
+                app:layout_constraintLeft_toRightOf="@+id/switch_four_name"
+                android:layout_marginLeft="8dp"
                 app:layout_constraintRight_toLeftOf="@+id/switch_four"
-                android:layout_marginRight="31dp" />
+                android:layout_marginRight="8dp" />
 
             <Switch
                 android:id="@+id/switch_four"

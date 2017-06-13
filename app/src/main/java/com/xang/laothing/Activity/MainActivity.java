@@ -628,7 +628,21 @@ public class MainActivity extends BaseActivity  implements SwipeRefreshLayout.On
                     @Override
                     public void run() {
 
-                        final int uplinkdata = RandomService.getRandomNumber();
+                        final int[] ack_prv = {0};
+
+                         ack.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                 ack_prv[0] = dataSnapshot.getValue(Integer.class);
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        final int uplinkdata = Math.abs(RandomService.getRandomNumber() - ack_prv[0]);
+
                         uplink.setValue(uplinkdata)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override

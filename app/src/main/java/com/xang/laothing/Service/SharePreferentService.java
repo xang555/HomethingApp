@@ -20,6 +20,8 @@ public class SharePreferentService {
     private static final String FINGER_PRINT = "finger_key";
     private static final String USER_EMAIL = "user_mail";
     private static final String EMAIL_KEY = "mail_key";
+    private static final String AUTO_EMAIL = "auto_email";
+    private static final String AUTO_EMAIL_KEY = "auto_mail_key";
 
     public static void SaveToken(Context context , String token){
 
@@ -96,5 +98,17 @@ public class SharePreferentService {
         return sharedPreferences.getString(EMAIL_KEY,"");
     }
 
+
+    public static void SaveAutoEmail(Context context, String email){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(AUTO_EMAIL,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(AUTO_EMAIL_KEY,email);
+        editor.apply();
+    }
+
+    public static String getAutoEmail(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(AUTO_EMAIL,Context.MODE_PRIVATE);
+        return sharedPreferences.getString(AUTO_EMAIL_KEY,"");
+    }
 
 }

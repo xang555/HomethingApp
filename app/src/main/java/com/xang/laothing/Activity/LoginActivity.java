@@ -12,6 +12,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ScrollView;
 
@@ -27,6 +29,8 @@ import com.xang.laothing.Service.AlertDialogService;
 import com.xang.laothing.Service.Depending;
 import com.xang.laothing.Service.SharePreferentService;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,7 +42,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.emailinputbox)
-    EditText emailinputbox;
+    AutoCompleteTextView emailinputbox;
     @BindView(R.id.passwdinputbox)
     EditText passwdinputbox;
     @BindView(R.id.scroll_login)
@@ -66,6 +70,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+      setupAutoCompleteEmail();
     }
 
     @OnClick({R.id.login_button, R.id.signup, R.id.forgot_password})
@@ -169,6 +180,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void Login(String email, String passwd) {
 
+        SharePreferentService.SaveAutoEmail(LoginActivity.this,email);
+
         auth.signInWithEmailAndPassword(email, passwd)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
@@ -242,6 +255,18 @@ public class LoginActivity extends AppCompatActivity {
         Intent signupintent = new Intent(LoginActivity.this, SignUpActivity.class);
         startActivity(signupintent);
     } //go to sig up activity
+
+    private void setupAutoCompleteEmail(){
+
+        String email = SharePreferentService.getAutoEmail(LoginActivity.this);
+        ArrayList<String> emailList = new ArrayList<>();
+        if (email.trim().length() > 0 ){
+            emailList.add(email);
+        }
+      ArrayAdapter<String> adapter = new ArrayAdapter<String>(LoginActivity.this,android.R.layout.simple_list_item_1,emailList);
+      emailinputbox.setAdapter(adapter);
+
+    }
 
 
 }

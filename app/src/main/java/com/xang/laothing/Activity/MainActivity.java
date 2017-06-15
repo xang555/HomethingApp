@@ -633,7 +633,9 @@ public class MainActivity extends BaseActivity  implements SwipeRefreshLayout.On
                          ack.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                 ack_prv[0] = dataSnapshot.getValue(Integer.class);
+                                if (dataSnapshot.getValue() !=null){
+                                    ack_prv[0] = dataSnapshot.getValue(Integer.class);
+                                }
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {

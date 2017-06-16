@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xang.laothing.Activity.SmartSwitchActivity">
+
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/include" />
+
+    <at.markushi.ui.CircleButton
+        android:layout_width="141dp"
+        android:layout_height="126dp"
+        android:src="@drawable/schedule_button"
+        app:cb_color="@color/colorButton"
+        app:cb_pressedRingWidth="8dp"
+        android:layout_marginTop="39dp"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        android:id="@+id/scheduler_button"
+        app:layout_constraintLeft_toRightOf="@+id/swartswitch_setting"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintRight_toLeftOf="@+id/buttonController"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.495" />
+
+
+    <at.markushi.ui.CircleButton
+        android:layout_width="141dp"
+        android:layout_height="126dp"
+        android:src="@drawable/settings"
+        app:cb_color="#4dbf66"
+        app:cb_pressedRingWidth="8dip"
+        android:id="@+id/swartswitch_setting"
+        android:layout_marginLeft="208dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="39dp"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <at.markushi.ui.CircleButton
+        android:layout_width="141dp"
+        android:layout_height="126dp"
+        android:src="@drawable/switch_controller"
+        app:cb_color="#17708b"
+        app:cb_pressedRingWidth="8dip"
+        android:layout_marginRight="206dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/buttonController"
+        android:layout_marginTop="39dp"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="254dp"
+        android:layout_marginTop="0dp"
+        android:text="Setting"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swartswitch_setting"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/time_label_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginTop="0dp"
+        android:text="Scheduler"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.627"
+        app:layout_constraintLeft_toRightOf="@+id/textView"
+        app:layout_constraintRight_toLeftOf="@+id/time_label_four"
+        app:layout_constraintTop_toBottomOf="@+id/scheduler_button"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/time_label_four"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="229dp"
+        android:layout_marginTop="0dp"
+        android:text="Controller"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonController"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</android.support.constraint.ConstraintLayout>

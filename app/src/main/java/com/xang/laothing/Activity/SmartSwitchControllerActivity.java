@@ -1,6 +1,7 @@
 package com.xang.laothing.Activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.xang.laothing.Offline.OfflineModeService;
 import com.xang.laothing.Offline.response.SmatrtSwitchOfflineResponse;
 import com.xang.laothing.R;
+import com.xang.laothing.Service.Depending;
 
 import at.markushi.ui.CircleButton;
 import butterknife.BindView;
@@ -731,10 +733,15 @@ public class SmartSwitchControllerActivity extends BaseActivity {
 
     private void handleswitchOffline(final String swn , String cmd, final CircleButton button, final ImageView lamp, final TextView status) {
 
+
+        final ProgressDialog depeningDialog =  Depending.showDependingProgressDialog(SmartSwitchControllerActivity.this,"waiting ...");
+
                 OfflineModeService.offlineService().SendCommand(swn,cmd)
                 .enqueue(new Callback<SmatrtSwitchOfflineResponse>() {
                     @Override
                     public void onResponse(Call<SmatrtSwitchOfflineResponse> call, Response<SmatrtSwitchOfflineResponse> response) {
+
+                            depeningDialog.dismiss();
 
                         if (response !=null && response.isSuccessful()){
                             SmatrtSwitchOfflineResponse switchOffline = response.body();
@@ -768,7 +775,8 @@ public class SmartSwitchControllerActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(Call<SmatrtSwitchOfflineResponse> call, Throwable t) {
-                        Snackbar.make(switchControllerContainer,t.getMessage(),Snackbar.LENGTH_SHORT).show();
+                        depeningDialog.dismiss();
+                        Snackbar.make(switchControllerContainer,t.getMessage(),Snackbar.LENGTH_LONG).show();
                     }
                 });
 

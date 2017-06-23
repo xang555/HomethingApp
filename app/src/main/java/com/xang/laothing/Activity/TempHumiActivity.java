@@ -175,7 +175,7 @@ public class TempHumiActivity extends BaseActivity {
 
         minute+=time.minute;
 
-        timeUpdateLabel.setText(hour+":"+minute);
+        timeUpdateLabel.setText(time.full+"  "+hour+":"+minute);
 
     } //update time
 

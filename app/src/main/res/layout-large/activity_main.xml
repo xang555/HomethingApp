@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/container"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/no_device_container"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/smiling" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:text="@string/no_device_item" />
+
+    </FrameLayout>
+
+    <include layout="@layout/toolbar"/>
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        style="@style/GPlusProgressBar"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone"
+        android:id="@+id/smoothprogressBar"
+        />
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/smartdevice_refresh_container"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.xang.laothing.Activity.MainActivity">
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/smartdevice_lists"
+            android:layout_width="match_parent"
+            android:paddingLeft="16dp"
+            android:layout_height="match_parent"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_scan_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        app:backgroundTint="@color/colorButton"
+        app:elevation="5dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_qr_code" />
+
+
+</android.support.design.widget.CoordinatorLayout>

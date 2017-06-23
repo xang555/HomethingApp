@@ -17,6 +17,7 @@ import com.xang.laothing.Api.ApiService;
 import com.xang.laothing.Api.reponse.SignUpAndLoginResponse;
 import com.xang.laothing.Api.request.LoginRequest;
 import com.xang.laothing.R;
+import com.xang.laothing.Service.RefreshToken;
 import com.xang.laothing.Service.SharePreferentService;
 
 import butterknife.BindView;
@@ -38,10 +39,14 @@ public class BannerActivity extends AppCompatActivity {
         }
     };
 
+    private Intent mrefreshTokenService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
+        mrefreshTokenService = new Intent(BannerActivity.this, RefreshToken.class);
+
     }
 
 
@@ -62,34 +67,13 @@ public class BannerActivity extends AppCompatActivity {
     private void CheckAuthentication(){
 
       if (auth.getCurrentUser() !=null){
-          //have login
-          String uid = auth.getCurrentUser().getUid();
-          ApiService.getRouterServiceApi().Login(new LoginRequest(uid))
-                  .enqueue(new Callback<SignUpAndLoginResponse>() {
-                      @Override
-                      public void onResponse(Call<SignUpAndLoginResponse> call, Response<SignUpAndLoginResponse> response) {
-
-                          if (response!=null && response.isSuccessful()){
-
-                              SignUpAndLoginResponse signIn = response.body();
-                              if (signIn.err != 1){
-                                  SharePreferentService.SaveToken(BannerActivity.this,signIn.token);
-                              }
-                          }
-                          RedirectToMainActivity(); // go to mainactivity
-                      }
-
-                      @Override
-                      public void onFailure(Call<SignUpAndLoginResponse> call, Throwable t) {
-                          RedirectToMainActivity(); // go to mainactivity
-                      }
-                  });
-
+          // login
+          getApplicationContext().startService(mrefreshTokenService);
+          RedirectToMainActivity(); // go to mainactivity
       }else {
           //no login
           RedirectoLoginActivity();
       }
-
 
     } //check authentication
 

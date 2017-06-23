@@ -61,16 +61,16 @@ public class SmartDeviceAdapter extends RecyclerView.Adapter<SmartDeviceAdapter.
         switch (smartDevicedatalists.get(position).getType()){
 
             case 0:
-                image = R.drawable.smart_switch;
+                image = R.drawable.ic_switch;
                 break;
             case 1 :
-                image = R.drawable.temp_and_humi;
+                image = R.drawable.ic_temp_and_humi;
                 break;
             case 2 :
-                image = R.drawable.gass_sensor;
+                image = R.drawable.ic_gass_sensor;
                 break;
             case 3 :
-                image = R.drawable.smart_alarm;
+                image = R.drawable.ic_alarm;
                 break;
 
         }

@@ -31,6 +31,8 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.xang.laothing.Database" />
 
+        <service android:name=".Service.RefreshToken" android:exported="false"/>
+
         <service
             android:name=".Service.FirebaseMessagingService"
             android:exported="false">

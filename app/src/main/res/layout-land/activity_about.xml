@@ -26,8 +26,8 @@
           android:layout_height="match_parent">
           <ImageView
               android:id="@+id/imageView4"
-              android:layout_width="137dp"
-              android:layout_height="127dp"
+              android:layout_width="119dp"
+              android:layout_height="107dp"
               app:srcCompat="@drawable/banner_about"
               android:layout_marginRight="8dp"
               app:layout_constraintRight_toRightOf="parent"
